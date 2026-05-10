@@ -6,943 +6,1067 @@
 <title>JS Trainer — Практика JavaScript</title>
 <meta name="description" content="Бесплатный тренажёр по JavaScript с бесконечными заданиями и автопроверкой">
 <meta name="theme-color" content="#6c63ff">
-
 <style>
-  :root {
-    --bg: #0f1117; --surface: #1a1d27; --surface2: #242837; --border: #2e3348;
-    --primary: #6c63ff; --primary-hover: #5a52d9; --success: #2ecc71; --error: #e74c3c;
-    --warning: #f39c12; --text: #e8e8e8; --text-dim: #8b8fa3; --code-bg: #0d0f15;
-    --accent: #00d2ff; --shadow: rgba(0,0,0,0.3);
-    --level-0: #161b22; --level-1: #0e4429; --level-2: #006d32; --level-3: #26a641; --level-4: #39d353;
-  }
-  html.light {
-    --bg: #f5f5f7; --surface: #ffffff; --surface2: #f0f0f2; --border: #d1d1d6;
-    --text: #1a1a1a; --text-dim: #666; --code-bg: #f8f8fa; --shadow: rgba(0,0,0,0.1);
-    --level-0: #ebedf0; --level-1: #9be9a8; --level-2: #40c463; --level-3: #30a14e; --level-4: #216e39;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s;}
+:root {
+--bg: #0f1117; --surface: #1a1d27; --surface2: #242837; --border: #2e3348;
+--primary: #6c63ff; --primary-hover: #5a52d9; --success: #2ecc71; --error: #e74c3c;
+--warning: #f39c12; --text: #e8e8e8; --text-dim: #8b8fa3; --code-bg: #0d0f15;
+--accent: #00d2ff; --shadow: rgba(0,0,0,0.3);
+--level-0: #161b22; --level-1: #0e4429; --level-2: #006d32; --level-3: #26a641; --level-4: #39d353;
+}
+html.light {
+--bg: #f5f5f7; --surface: #ffffff; --surface2: #f0f0f2; --border: #d1d1d6;
+--text: #1a1a1a; --text-dim: #666; --code-bg: #f8f8fa; --shadow: rgba(0,0,0,0.1);
+--level-0: #ebedf0; --level-1: #9be9a8; --level-2: #40c463; --level-3: #30a14e; --level-4: #216e39;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;transition:background .3s,color .3s;}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:50;box-shadow:0 2px 8px var(--shadow);}
+.burger-btn{background:none;border:1px solid var(--border);color:var(--text);font-size:1.4rem;padding:6px 10px;border-radius:6px;cursor:pointer;transition:.2s;}
+.burger-btn:hover{background:var(--surface2);}
+.logo{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stats-bar{display:flex;gap:16px;align-items:center;font-size:.85rem;color:var(--text-dim);}
+.stats-bar .val{color:var(--accent);font-weight:700;}
+.theme-toggle{background:none;border:1px solid var(--border);color:var(--text);font-size:1.2rem;padding:6px 10px;border-radius:6px;cursor:pointer;margin-left:10px;transition:.2s;}
+.theme-toggle:hover{background:var(--surface2);}
+.menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(2px);}
+html.light .menu-overlay{background:rgba(0,0,0,.3);}
+.menu-overlay.open{opacity:1;pointer-events:auto;}
+.slide-menu{position:fixed;top:0;left:0;bottom:0;width:400px;background:var(--surface);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:100;display:flex;flex-direction:column;overflow-y:auto;box-shadow:4px 0 24px var(--shadow);}
+.slide-menu.open{transform:translateX(0);}
+.menu-header{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10;}
+.menu-header h3{margin:0;font-size:1rem;}
+.close-menu{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:4px 8px;border-radius:4px;}
+.close-menu:hover{background:var(--surface2);color:var(--text);}
 
-  header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;z-index:50;box-shadow:0 2px 8px var(--shadow);}
-  .burger-btn{background:none;border:1px solid var(--border);color:var(--text);font-size:1.4rem;padding:6px 10px;border-radius:6px;cursor:pointer;transition:.2s;}
-  .burger-btn:hover{background:var(--surface2);}
-  .logo{font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-  .stats-bar{display:flex;gap:16px;align-items:center;font-size:.85rem;color:var(--text-dim);}
-  .stats-bar .val{color:var(--accent);font-weight:700;}
-  .theme-toggle{background:none;border:1px solid var(--border);color:var(--text);font-size:1.2rem;padding:6px 10px;border-radius:6px;cursor:pointer;margin-left:10px;transition:.2s;}
-  .theme-toggle:hover{background:var(--surface2);}
+/* Search Styles */
+.search-box { padding: 12px 16px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 57px; z-index: 9; }
+.search-input { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--code-bg); color: var(--text); font-size: 0.95rem; outline: none; transition: 0.2s; }
+.search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2); }
+.search-results { margin-top: 8px; display: none; max-height: 200px; overflow-y: auto; }
+.search-results.active { display: block; }
+.search-item { padding: 10px 12px; background: var(--surface2); border-radius: 6px; margin-bottom: 6px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+.search-item:hover { background: var(--primary); color: #fff; }
+.search-item .icon { font-size: 1.2rem; }
+.search-item .info { display: flex; flex-direction: column; }
+.search-item .title { font-weight: 600; font-size: 0.9rem; }
+.search-item .match { font-size: 0.75rem; opacity: 0.7; }
 
-  .menu-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(2px);}
-  html.light .menu-overlay{background:rgba(0,0,0,.3);}
-  .menu-overlay.open{opacity:1;pointer-events:auto;}
-  .slide-menu{position:fixed;top:0;left:0;bottom:0;width:400px;background:var(--surface);border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:100;display:flex;flex-direction:column;overflow-y:auto;box-shadow:4px 0 24px var(--shadow);}
-  .slide-menu.open{transform:translateX(0);}
-  .menu-header{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:10;}
-  .menu-header h3{margin:0;font-size:1rem;}
-  .close-menu{background:none;border:none;color:var(--text-dim);font-size:1.2rem;cursor:pointer;padding:4px 8px;border-radius:4px;}
-  .close-menu:hover{background:var(--surface2);color:var(--text);}
-  
-  .topic-group{border-bottom:1px solid var(--border);}
-  .topic-group:last-child{border-bottom:none;}
-  .topic-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;transition:.2s;user-select:none;}
-  .topic-header:hover{background:var(--surface2);}
-  .topic-header .t-name{font-size:.95rem;font-weight:500;display:flex;align-items:center;gap:8px;}
-  .topic-header .arrow{transition:transform .2s;color:var(--text-dim);font-size:.8rem;}
-  .topic-group.open .topic-header .arrow{transform:rotate(90deg);}
-  .topic-levels{max-height:0;overflow:hidden;transition:max-height .3s ease;background:rgba(0,0,0,.15);}
-  .topic-group.open .topic-levels{max-height:450px;padding:8px 12px 12px;}
-  .topic-levels .lvl-grid{display:flex;flex-wrap:wrap;gap:6px;}
-  .lvl-btn{padding:6px 10px;background:var(--surface2);border:none;color:var(--text-dim);border-radius:6px;cursor:pointer;font-size:.8rem;font-weight:600;transition:.2s;}
-  .lvl-btn:hover{background:var(--primary);color:#fff;}
-  .lvl-btn.active{background:var(--primary);color:#fff;}
-
-  .content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-  .task-header{padding:16px;background:var(--surface);border-bottom:1px solid var(--border);}
-  .badges{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
-  .badge{padding:3px 8px;border-radius:12px;font-size:.7rem;font-weight:600;text-transform:uppercase;background:var(--surface2);color:var(--text-dim);}
-  .badge.lvl{background:rgba(108,99,255,.2);color:var(--primary);}
-  .badge.topic{background:rgba(0,210,255,.15);color:var(--accent);}
-  .task-title{font-size:1.1rem;line-height:1.5;}
-
-  .editor-area{flex:1;padding:16px;display:flex;flex-direction:column;}
-  .editor-label{font-size:.8rem;color:var(--text-dim);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-  .editor-label .line-info{font-size:.75rem;color:var(--text-dim);}
-  .code-editor{flex:1;min-height:140px;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;color:#abb2bf;font-family:Consolas,monospace;font-size:.9rem;padding:12px;resize:none;outline:none;tab-size:4;line-height:1.6;transition:border-color .2s;}
-  html.light .code-editor{color:#333;}
-  .code-editor:focus{border-color:var(--primary);}
-  .code-error{border-color:var(--error)!important;animation:shake .3s;}
-  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
-
-  .console-area{max-height:180px;border-top:1px solid var(--border);background:var(--surface);overflow-y:auto;display:none;}
-  .console-area.show{display:block;}
-  .console-header{padding:6px 16px;font-size:.75rem;color:var(--text-dim);display:flex;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--surface2);}
-  .console-clear{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:2px 6px;border-radius:4px;}
-  .console-clear:hover{background:var(--border);color:var(--text);}
-  .console-output{padding:8px 16px;font-family:monospace;font-size:.85rem;}
-  .console-line{padding:2px 0;word-break:break-all;animation:fadeIn .2s;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
-  .console-line.log{color:var(--text);} .console-line.error{color:var(--error);}
-  .console-line.success{color:var(--success);} .console-line.info{color:var(--accent);}
-
-  .actions{padding:12px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:8px;flex-wrap:wrap;}
-  .btn{padding:9px 16px;border:none;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:5px;}
-  .btn-primary{background:var(--primary);color:#fff;} .btn-primary:hover{background:var(--primary-hover);}
-  .btn-primary:disabled{opacity:.4;cursor:not-allowed;}
-  .btn-retry{background:var(--surface2);color:var(--text);border:1px solid var(--border);} .btn-retry:hover{background:var(--border);}
-  .btn-next{background:var(--success);color:#fff;} .btn-next:hover{filter:brightness(1.1);}
-  .btn-hint{background:transparent;color:var(--warning);border:1px solid var(--warning);margin-left:auto;}
-  .btn-hint:hover{background:rgba(243,156,18,.1);}
-
-  .hint-panel{max-height:0;overflow:hidden;transition:max-height .4s ease;background:var(--surface);}
-  .hint-panel.open{max-height:700px;border-top:1px solid var(--border);}
-  .hint-content{padding:16px;}
-  .hint-content h4{color:var(--warning);margin-bottom:8px;font-size:.95rem;}
-  .hint-text{color:var(--text-dim);line-height:1.6;margin-bottom:10px;font-size:.9rem;white-space:pre-line;}
-  .hint-example{background:var(--code-bg);border-radius:6px;padding:12px;font-family:monospace;font-size:.85rem;line-height:1.6;color:#abb2bf;white-space:pre;overflow-x:auto;border:1px solid var(--border);}
-
-  .welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;flex:1;}
-  .welcome h2{margin-bottom:10px;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.8rem;}
-  .welcome p{color:var(--text-dim);max-width:500px;line-height:1.5;margin-bottom:20px;}
-
-  /* GitHub-style contribution graph */
-  .activity-panel{padding:16px;border-top:1px solid var(--border);}
-  .activity-panel h4{margin-bottom:12px;font-size:.95rem;color:var(--text-dim);}
-  
-  .contribution-graph{margin-bottom:16px;}
-  .graph-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:.8rem;color:var(--text-dim);}
-  .graph-container{display:flex;gap:3px;overflow-x:auto;padding-bottom:8px;}
-  .month-labels{display:flex;margin-left:28px;margin-bottom:4px;font-size:.75rem;color:var(--text-dim);}
-  .month-label{flex:1;text-align:center;min-width:60px;}
-  .graph-weeks{display:flex;gap:3px;}
-  .graph-day{width:11px;height:11px;border-radius:2px;cursor:pointer;transition:transform .1s;}
-  .graph-day:hover{transform:scale(1.2);outline:1px solid var(--text);}
-  .graph-day.level-0{background:var(--level-0);}
-  .graph-day.level-1{background:var(--level-1);}
-  .graph-day.level-2{background:var(--level-2);}
-  .graph-day.level-3{background:var(--level-3);}
-  .graph-day.level-4{background:var(--level-4);}
-  
-  .activity-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
-  .stat-box{background:var(--surface2);padding:12px;border-radius:8px;text-align:center;}
-  .stat-value{font-size:1.5rem;font-weight:700;color:var(--accent);margin-bottom:4px;}
-  .stat-label{font-size:.75rem;color:var(--text-dim);}
-  
-  .legend{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:.75rem;color:var(--text-dim);justify-content:flex-end;}
-  .legend-item{display:flex;align-items:center;gap:4px;}
-  .legend-box{width:11px;height:11px;border-radius:2px;}
-
-  .prompt-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
-  .prompt-overlay.show{display:flex;}
-  .prompt-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;width:320px;text-align:center;box-shadow:0 8px 32px var(--shadow);animation:slideIn .3s;}
-  @keyframes slideIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
-  .prompt-box label{display:block;margin-bottom:10px;color:var(--text-dim);font-size:.9rem;}
-  .prompt-box input{width:100%;padding:8px 10px;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;outline:none;margin-bottom:12px;}
-  .prompt-box input:focus{border-color:var(--primary);}
-  .prompt-box .btn{width:100%;justify-content:center;}
-
-  .levelup-toast{position:fixed;top:80px;right:20px;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:16px 20px;border-radius:10px;box-shadow:0 8px 24px rgba(108,99,255,.4);z-index:200;transform:translateX(400px);transition:transform .4s cubic-bezier(.68,-.55,.265,1.55);}
-  .levelup-toast.show{transform:translateX(0);}
-  .levelup-toast h4{margin-bottom:4px;font-size:1rem;} .levelup-toast p{font-size:.85rem;opacity:.9;}
-
-  /* Tooltip */
-  .tooltip{position:fixed;background:var(--surface);border:1px solid var(--border);padding:8px 12px;border-radius:6px;font-size:.85rem;pointer-events:none;z-index:1000;box-shadow:0 4px 12px var(--shadow);display:none;}
-  .tooltip.show{display:block;}
-
-  @media(max-width:600px){
-    .slide-menu{width:100%;}
-    .actions{justify-content:stretch;}
-    .btn{flex:1;justify-content:center;}
-    .btn-hint{margin-left:0;}
-    .levelup-toast{right:10px;left:10px;top:auto;bottom:20px;}
-    .activity-stats{grid-template-columns:1fr;}
-  }
+.topic-group{border-bottom:1px solid var(--border);}
+.topic-group:last-child{border-bottom:none;}
+.topic-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;transition:.2s;user-select:none;}
+.topic-header:hover{background:var(--surface2);}
+.topic-header .t-name{font-size:.95rem;font-weight:500;display:flex;align-items:center;gap:8px;}
+.topic-header .arrow{transition:transform .2s;color:var(--text-dim);font-size:.8rem;}
+.topic-group.open .topic-header .arrow{transform:rotate(90deg);}
+.topic-levels{max-height:0;overflow:hidden;transition:max-height .3s ease;background:rgba(0,0,0,.15);}
+.topic-group.open .topic-levels{max-height:450px;padding:8px 12px 12px;}
+.topic-levels .lvl-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.lvl-btn{padding:6px 10px;background:var(--surface2);border:none;color:var(--text-dim);border-radius:6px;cursor:pointer;font-size:.8rem;font-weight:600;transition:.2s;}
+.lvl-btn:hover{background:var(--primary);color:#fff;}
+.lvl-btn.active{background:var(--primary);color:#fff;}
+.content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.task-header{padding:16px;background:var(--surface);border-bottom:1px solid var(--border);}
+.badges{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.badge{padding:3px 8px;border-radius:12px;font-size:.7rem;font-weight:600;text-transform:uppercase;background:var(--surface2);color:var(--text-dim);}
+.badge.lvl{background:rgba(108,99,255,.2);color:var(--primary);}
+.badge.topic{background:rgba(0,210,255,.15);color:var(--accent);}
+.task-title{font-size:1.1rem;line-height:1.5;}
+.editor-area{flex:1;padding:16px;display:flex;flex-direction:column;}
+.editor-label{font-size:.8rem;color:var(--text-dim);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.editor-label .line-info{font-size:.75rem;color:var(--text-dim);}
+.code-editor{flex:1;min-height:140px;background:var(--code-bg);border:1px solid var(--border);border-radius:8px;color:#abb2bf;font-family:Consolas,monospace;font-size:.9rem;padding:12px;resize:none;outline:none;tab-size:4;line-height:1.6;transition:border-color .2s;}
+html.light .code-editor{color:#333;}
+.code-editor:focus{border-color:var(--primary);}
+.code-error{border-color:var(--error)!important;animation:shake .3s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+.console-area{max-height:180px;border-top:1px solid var(--border);background:var(--surface);overflow-y:auto;display:none;}
+.console-area.show{display:block;}
+.console-header{padding:6px 16px;font-size:.75rem;color:var(--text-dim);display:flex;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--surface2);}
+.console-clear{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:2px 6px;border-radius:4px;}
+.console-clear:hover{background:var(--border);color:var(--text);}
+.console-output{padding:8px 16px;font-family:monospace;font-size:.85rem;}
+.console-line{padding:2px 0;word-break:break-all;animation:fadeIn .2s;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+.console-line.log{color:var(--text);} .console-line.error{color:var(--error);}
+.console-line.success{color:var(--success);} .console-line.info{color:var(--accent);}
+.actions{padding:12px 16px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:8px;flex-wrap:wrap;}
+.btn{padding:9px 16px;border:none;border-radius:6px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:5px;}
+.btn-primary{background:var(--primary);color:#fff;} .btn-primary:hover{background:var(--primary-hover);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.btn-retry{background:var(--surface2);color:var(--text);border:1px solid var(--border);} .btn-retry:hover{background:var(--border);}
+.btn-next{background:var(--success);color:#fff;} .btn-next:hover{filter:brightness(1.1);}
+.btn-hint{background:transparent;color:var(--warning);border:1px solid var(--warning);margin-left:auto;}
+.btn-hint:hover{background:rgba(243,156,18,.1);}
+.hint-panel{max-height:0;overflow:hidden;transition:max-height .4s ease;background:var(--surface);}
+.hint-panel.open{max-height:700px;border-top:1px solid var(--border);}
+.hint-content{padding:16px;}
+.hint-content h4{color:var(--warning);margin-bottom:8px;font-size:.95rem;}
+.hint-text{color:var(--text-dim);line-height:1.6;margin-bottom:10px;font-size:.9rem;white-space:pre-line;}
+.hint-example{background:var(--code-bg);border-radius:6px;padding:12px;font-family:monospace;font-size:.85rem;line-height:1.6;color:#abb2bf;white-space:pre;overflow-x:auto;border:1px solid var(--border);}
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;flex:1;}
+.welcome h2{margin-bottom:10px;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.8rem;}
+.welcome p{color:var(--text-dim);max-width:500px;line-height:1.5;margin-bottom:20px;}
+/* GitHub-style contribution graph */
+.activity-panel{padding:16px;border-top:1px solid var(--border);}
+.activity-panel h4{margin-bottom:12px;font-size:.95rem;color:var(--text-dim);}
+.contribution-graph{margin-bottom:16px;}
+.graph-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:.8rem;color:var(--text-dim);}
+.graph-container{display:flex;gap:3px;overflow-x:auto;padding-bottom:8px;}
+.month-labels{display:flex;margin-left:28px;margin-bottom:4px;font-size:.75rem;color:var(--text-dim);}
+.month-label{flex:1;text-align:center;min-width:60px;}
+.graph-weeks{display:flex;gap:3px;}
+.graph-day{width:11px;height:11px;border-radius:2px;cursor:pointer;transition:transform .1s;}
+.graph-day:hover{transform:scale(1.2);outline:1px solid var(--text);}
+.graph-day.level-0{background:var(--level-0);}
+.graph-day.level-1{background:var(--level-1);}
+.graph-day.level-2{background:var(--level-2);}
+.graph-day.level-3{background:var(--level-3);}
+.graph-day.level-4{background:var(--level-4);}
+.activity-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
+.stat-box{background:var(--surface2);padding:12px;border-radius:8px;text-align:center;}
+.stat-value{font-size:1.5rem;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.stat-label{font-size:.75rem;color:var(--text-dim);}
+.legend{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:.75rem;color:var(--text-dim);justify-content:flex-end;}
+.legend-item{display:flex;align-items:center;gap:4px;}
+.legend-box{width:11px;height:11px;border-radius:2px;}
+.prompt-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.prompt-overlay.show{display:flex;}
+.prompt-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;width:320px;text-align:center;box-shadow:0 8px 32px var(--shadow);animation:slideIn .3s;}
+@keyframes slideIn{from{opacity:0;transform:scale(.9);}to{opacity:1;transform:scale(1);}}
+.prompt-box label{display:block;margin-bottom:10px;color:var(--text-dim);font-size:.9rem;}
+.prompt-box input{width:100%;padding:8px 10px;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;outline:none;margin-bottom:12px;}
+.prompt-box input:focus{border-color:var(--primary);}
+.prompt-box .btn{width:100%;justify-content:center;}
+.levelup-toast{position:fixed;top:80px;right:20px;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;padding:16px 20px;border-radius:10px;box-shadow:0 8px 24px rgba(108,99,255,.4);z-index:200;transform:translateX(400px);transition:transform .4s cubic-bezier(.68,-.55,.265,1.55);}
+.levelup-toast.show{transform:translateX(0);}
+.levelup-toast h4{margin-bottom:4px;font-size:1rem;} .levelup-toast p{font-size:.85rem;opacity:.9;}
+/* Tooltip */
+.tooltip{position:fixed;background:var(--surface);border:1px solid var(--border);padding:8px 12px;border-radius:6px;font-size:.85rem;pointer-events:none;z-index:1000;box-shadow:0 4px 12px var(--shadow);display:none;}
+.tooltip.show{display:block;}
+@media(max-width:600px){
+.slide-menu{width:100%;}
+.actions{justify-content:stretch;}
+.btn{flex:1;justify-content:center;}
+.btn-hint{margin-left:0;}
+.levelup-toast{right:10px;left:10px;top:auto;bottom:20px;}
+.activity-stats{grid-template-columns:1fr;}
+}
 </style>
 </head>
 <body>
-
 <header>
-  <button class="burger-btn" id="burger-btn">☰</button>
-  <div class="logo">⚡ JS Trainer</div>
-  <div class="stats-bar">
-    <span>🔥 <span class="val" id="streak">0</span></span>
-    <span>✅ <span class="val" id="solved">0</span></span>
-    <button class="theme-toggle" id="theme-toggle" title="Сменить тему">🌙</button>
-  </div>
+<button class="burger-btn" id="burger-btn">☰</button>
+<div class="logo">⚡ JS Trainer</div>
+<div class="stats-bar">
+<span>🔥 <span class="val" id="streak">0</span></span>
+<span>✅ <span class="val" id="solved">0</span></span>
+<button class="theme-toggle" id="theme-toggle" title="Сменить тему">🌙</button>
+</div>
 </header>
-
 <div class="menu-overlay" id="menu-overlay"></div>
 <nav class="slide-menu" id="slide-menu">
-  <div class="menu-header">
-    <h3>📖 Настройки</h3>
-    <button class="close-menu" id="close-menu"></button>
-  </div>
-  <div id="topic-accordion" style="flex:1;overflow-y:auto;"></div>
-  
-  <!-- Activity Panel -->
-  <div class="activity-panel">
-    <h4>📊 Активность</h4>
-    <div class="contribution-graph" id="contribution-graph"></div>
-    <div class="activity-stats">
-      <div class="stat-box">
-        <div class="stat-value" id="stat-current-streak">0</div>
-        <div class="stat-label">дней без перерыва</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value" id="stat-best-streak">0</div>
-        <div class="stat-label">дней без перерыва (макс.)</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-value" id="stat-total-solved">0</div>
-        <div class="stat-label">задач решено</div>
-      </div>
-    </div>
-    <div class="legend">
-      <span>Меньше</span>
-      <div class="legend-box level-0"></div>
-      <div class="legend-box level-1"></div>
-      <div class="legend-box level-2"></div>
-      <div class="legend-box level-3"></div>
-      <div class="legend-box level-4"></div>
-      <span>Больше</span>
-    </div>
-  </div>
+<div class="menu-header">
+<h3>📖 Настройки</h3>
+<button class="close-menu" id="close-menu">✕</button>
+</div>
+<!-- Search Box -->
+<div class="search-box">
+<input type="text" id="search-input" class="search-input" placeholder="🔍 Поиск: while, for, if, prompt, array..." autocomplete="off">
+<div id="search-results" class="search-results"></div>
+</div>
+<div id="topic-accordion" style="flex:1;overflow-y:auto;"></div>
+<!-- Activity Panel -->
+<div class="activity-panel">
+<h4>📊 Активность</h4>
+<div class="contribution-graph" id="contribution-graph"></div>
+<div class="activity-stats">
+<div class="stat-box">
+<div class="stat-value" id="stat-current-streak">0</div>
+<div class="stat-label">дней без перерыва</div>
+</div>
+<div class="stat-box">
+<div class="stat-value" id="stat-best-streak">0</div>
+<div class="stat-label">дней без перерыва (макс.)</div>
+</div>
+<div class="stat-box">
+<div class="stat-value" id="stat-total-solved">0</div>
+<div class="stat-label">задач решено</div>
+</div>
+</div>
+<div class="legend">
+<span>Меньше</span>
+<div class="legend-box level-0"></div>
+<div class="legend-box level-1"></div>
+<div class="legend-box level-2"></div>
+<div class="legend-box level-3"></div>
+<div class="legend-box level-4"></div>
+<span>Больше</span>
+</div>
+</div>
 </nav>
-
 <main class="content">
-  <canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:1000;"></canvas>
-  
-  <div id="welcome-screen" class="welcome">
-    <h2>Добро пожаловать!</h2>
-    <p>Открой меню ☰ и выбери тему и уровень сложности. Задания генерируются бесконечно!</p>
-    <button class="btn btn-primary" onclick="startRandom()">🎲 Случайное задание</button>
-  </div>
-
-  <div class="task-header" id="task-header" style="display:none;">
-    <div class="badges">
-      <span class="badge lvl" id="badge-level"></span>
-      <span class="badge topic" id="badge-topic"></span>
-    </div>
-    <div class="task-title" id="task-title"></div>
-  </div>
-
-  <div class="editor-area" id="editor-area" style="display:none;">
-    <div class="editor-label">
-      <span>✍️ Твой код:</span>
-      <span class="line-info" id="line-info">Строка: 1</span>
-    </div>
-    <textarea class="code-editor" id="code-editor" spellcheck="false" placeholder="// Пиши решение здесь..."></textarea>
-  </div>
-
-  <div class="console-area" id="console-area">
-    <div class="console-header">
-      <span>📟 Консоль</span>
-      <button class="console-clear" onclick="clearConsole()">Очистить</button>
-    </div>
-    <div class="console-output" id="console-output"></div>
-  </div>
-
-  <div class="actions" id="actions-bar" style="display:none;">
-    <button class="btn btn-primary" id="btn-check" onclick="checkSolution()">▶ Проверить</button>
-    <button class="btn btn-retry" id="btn-retry" onclick="retryTask()">🔄 Заново</button>
-    <button class="btn btn-next" id="btn-next" onclick="nextTask()">➡ Следующее</button>
-    <button class="btn btn-hint" id="btn-hint" onclick="toggleHint()">💡 Подсказка</button>
-  </div>
-
-  <div class="hint-panel" id="hint-panel">
-    <div class="hint-content" id="hint-content"></div>
-  </div>
+<canvas id="confetti-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:1000;"></canvas>
+<div id="welcome-screen" class="welcome">
+<h2>Добро пожаловать!</h2>
+<p>Открой меню ☰ и выбери тему и уровень сложности. Задания генерируются бесконечно!</p>
+<button class="btn btn-primary" onclick="startRandom()">🎲 Случайное задание</button>
+</div>
+<div class="task-header" id="task-header" style="display:none;">
+<div class="badges">
+<span class="badge lvl" id="badge-level"></span>
+<span class="badge topic" id="badge-topic"></span>
+</div>
+<div class="task-title" id="task-title"></div>
+</div>
+<div class="editor-area" id="editor-area" style="display:none;">
+<div class="editor-label">
+<span>✍️ Твой код:</span>
+<span class="line-info" id="line-info">Строка: 1</span>
+</div>
+<textarea class="code-editor" id="code-editor" spellcheck="false" placeholder="// Пиши решение здесь..."></textarea>
+</div>
+<div class="console-area" id="console-area">
+<div class="console-header">
+<span>📟 Консоль</span>
+<button class="console-clear" onclick="clearConsole()">Очистить</button>
+</div>
+<div class="console-output" id="console-output"></div>
+</div>
+<div class="actions" id="actions-bar" style="display:none;">
+<button class="btn btn-primary" id="btn-check" onclick="checkSolution()">▶ Проверить</button>
+<button class="btn btn-retry" id="btn-retry" onclick="retryTask()">🔄 Заново</button>
+<button class="btn btn-next" id="btn-next" onclick="nextTask()">➡ Следующее</button>
+<button class="btn btn-hint" id="btn-hint" onclick="toggleHint()">💡 Подсказка</button>
+</div>
+<div class="hint-panel" id="hint-panel">
+<div class="hint-content" id="hint-content"></div>
+</div>
 </main>
-
 <div class="prompt-overlay" id="prompt-overlay">
-  <div class="prompt-box">
-    <label id="prompt-label">Введи значение:</label>
-    <input type="text" id="prompt-input" autocomplete="off">
-    <button class="btn btn-primary" onclick="submitPrompt()">OK</button>
-  </div>
+<div class="prompt-box">
+<label id="prompt-label">Введи значение:</label>
+<input type="text" id="prompt-input" autocomplete="off">
+<button class="btn btn-primary" onclick="submitPrompt()">OK</button>
 </div>
-
+</div>
 <div class="levelup-toast" id="levelup-toast">
-  <h4>🎉 Отличная работа!</h4>
-  <p>Попробуй следующий уровень сложности!</p>
+<h4>🎉 Отличная работа!</h4>
+<p>Попробуй следующий уровень сложности!</p>
 </div>
-
 <div class="tooltip" id="tooltip"></div>
-
 <script>
 /* ================= STATE ================= */
 const state={
-  level:1, topic:null, task:null, streak:0, solved:0,
-  consecutiveCorrect:0, consecutiveWrong:0,
-  dailyProgress: {}, // 'YYYY-MM-DD': { solved: N }
-  recentTemplates: {}, // topicId: [idx1, idx2, ...]
-  firstActivityDate: null,
-  bestStreak: 0
+level:1, topic:null, task:null, streak:0, solved:0,
+consecutiveCorrect:0, consecutiveWrong:0,
+dailyProgress: {}, 
+recentTemplates: {}, 
+firstActivityDate: null,
+bestStreak: 0,
+activeKeyword: null // NEW: stores active search keyword
 };
-
 /* ================= LOCAL STORAGE ================= */
 const Storage={
-  key:'jsTrainer_v4',
-  load(){
-    try{
-      const s=JSON.parse(localStorage.getItem(this.key)||'{}');
-      state.streak=s.streak||0; state.solved=s.solved||0;
-      state.dailyProgress=s.dailyProgress||{};
-      state.recentTemplates=s.recentTemplates||{};
-      state.theme=s.theme||'dark';
-      state.firstActivityDate=s.firstActivityDate||null;
-      state.bestStreak=s.bestStreak||0;
-    }catch(e){ state.dailyProgress={}; state.recentTemplates={}; state.theme='dark'; state.firstActivityDate=null; state.bestStreak=0; }
-  },
-  save(){
-    localStorage.setItem(this.key,JSON.stringify({
-      streak:state.streak, solved:state.solved,
-      dailyProgress:state.dailyProgress, recentTemplates:state.recentTemplates,
-      theme:state.theme, firstActivityDate:state.firstActivityDate, bestStreak:state.bestStreak
-    }));
-  }
+key:'jsTrainer_v5',
+load(){
+try{
+const s=JSON.parse(localStorage.getItem(this.key)||'{}');
+state.streak=s.streak||0; state.solved=s.solved||0;
+state.dailyProgress=s.dailyProgress||{};
+state.recentTemplates=s.recentTemplates||{};
+state.theme=s.theme||'dark';
+state.firstActivityDate=s.firstActivityDate||null;
+state.bestStreak=s.bestStreak||0;
+}catch(e){ state.dailyProgress={}; state.recentTemplates={}; state.theme='dark'; state.firstActivityDate=null; state.bestStreak=0; }
+},
+save(){
+localStorage.setItem(this.key,JSON.stringify({
+streak:state.streak, solved:state.solved,
+dailyProgress:state.dailyProgress, recentTemplates:state.recentTemplates,
+theme:state.theme, firstActivityDate:state.firstActivityDate, bestStreak:state.bestStreak
+}));
+}
 };
-
 /* ================= CONFIG ================= */
 const LEVELS=[1,2,3,4,5,6,7,8];
 const TOPICS=[
-  {id:'vars',icon:'📦',name:'Переменные и вывод'},
-  {id:'math',icon:'🔢',name:'Арифметика и операторы'},
-  {id:'ifelse',icon:'🔀',name:'Условия'},
-  {id:'str',icon:'📝',name:'Строки'},
-  {id:'func',icon:'⚙️',name:'Функции'},
-  {id:'loop',icon:'🔁',name:'Циклы'},
-  {id:'arr',icon:'📋',name:'Массивы'},
-  {id:'algo',icon:'🧮',name:'Алгоритмы'}
+{id:'vars',icon:'📦',name:'Переменные и вывод'},
+{id:'math',icon:'🔢',name:'Арифметика и операторы'},
+{id:'ifelse',icon:'🔀',name:'Условия'},
+{id:'str',icon:'📝',name:'Строки'},
+{id:'func',icon:'⚙️',name:'Функции'},
+{id:'loop',icon:'🔁',name:'Циклы'},
+{id:'arr',icon:'📋',name:'Массивы'},
+{id:'algo',icon:'🧮',name:'Алгоритмы'}
 ];
 
 /* ================= HELPERS ================= */
 const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
 const ra=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>[...a].sort(()=>Math.random()-.5);
-
 function getUniqueTemplateIndex(topicId, max) {
-  if(!state.recentTemplates[topicId]) state.recentTemplates[topicId]=[];
-  const recent=state.recentTemplates[topicId];
-  let idx;
-  let attempts=0;
-  do {
-    idx=ri(0,max-1);
-    attempts++;
-  } while(recent.includes(idx) && attempts<10 && recent.length<max);
-  recent.push(idx);
-  if(recent.length>3) recent.shift();
-  return idx;
+if(!state.recentTemplates[topicId]) state.recentTemplates[topicId]=[];
+const recent=state.recentTemplates[topicId];
+let idx;
+let attempts=0;
+do {
+idx=ri(0,max-1);
+attempts++;
+} while(recent.includes(idx) && attempts<10 && recent.length<max);
+recent.push(idx);
+if(recent.length>3) recent.shift();
+return idx;
 }
-
 function formatDate(date){
-  return date.toISOString().split('T')[0];
+return date.toISOString().split('T')[0];
+}
+function getMonthName(month){
+const names=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+return names[month];
 }
 
-function getMonthName(month){
-  const names=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
-  return names[month];
+/* ================= KEYWORD SEARCH SYSTEM ================= */
+// Maps keywords to specific task generators/pools
+const KEYWORD_MAP = {
+  'while': {
+    label: 'while (цикл)',
+    icon: '🔁',
+    gen: () => {
+      const n = ri(3, 8);
+      return {
+        task: `Выведи числа от <code>1</code> до <code>${n}</code> используя цикл <code>while</code>.`,
+        expected: Array.from({length:n}, (_,i)=>i+1).join('\n'),
+        expl: `Используй цикл while. Создай переменную i=1. Пока i <= ${n}, выводи i и увеличивай i++.`,
+        code: `let i = 1;\nwhile (i <= ${n}) {\n  console.log(i);\n  i++;\n}`,
+        hasPrompt: false,
+        syntax: 'while'
+      };
+    }
+  },
+  'for': {
+    label: 'for (цикл)',
+    icon: '🔁',
+    gen: () => {
+      const n = ri(3, 8);
+      return {
+        task: `Выведи числа от <code>1</code> до <code>${n}</code> используя цикл <code>for</code>.`,
+        expected: Array.from({length:n}, (_,i)=>i+1).join('\n'),
+        expl: `Используй цикл for: for (let i = 1; i <= ${n}; i++) { console.log(i); }`,
+        code: `for (let i = 1; i <= ${n}; i++) {\n  console.log(i);\n}`,
+        hasPrompt: false,
+        syntax: 'for'
+      };
+    }
+  },
+  'do-while': {
+    label: 'do-while (цикл)',
+    icon: '🔁',
+    gen: () => {
+      const n = ri(3, 8);
+      return {
+        task: `Выведи числа от <code>1</code> до <code>${n}</code> используя цикл <code>do...while</code>.`,
+        expected: Array.from({length:n}, (_,i)=>i+1).join('\n'),
+        expl: `Цикл do...while выполняется хотя бы раз. do { console.log(i); i++; } while (i <= ${n});`,
+        code: `let i = 1;\ndo {\n  console.log(i);\n  i++;\n} while (i <= ${n});`,
+        hasPrompt: false,
+        syntax: 'do-while'
+      };
+    }
+  },
+  'if': {
+    label: 'if (условие)',
+    icon: '🔀',
+    gen: () => {
+      const n = ri(1, 20);
+      return {
+        task: `Через prompt() введи число <code>${n}</code>. Если оно чётное, выведи <code>"Чётное"</code>.`,
+        expected: n % 2 === 0 ? 'Чётное' : null,
+        expl: `Используй if (n % 2 === 0) { console.log("Чётное"); }`,
+        code: `let n = Number(prompt());\nif (n % 2 === 0) {\n  console.log("Чётное");\n}`,
+        hasPrompt: true,
+        input: String(n),
+        syntax: 'if'
+      };
+    }
+  },
+  'else': {
+    label: 'if / else',
+    icon: '🔀',
+    gen: () => {
+      const n = ri(1, 20);
+      return {
+        task: `Через prompt() введи число <code>${n}</code>. Если оно > 10 выведи <code>"Больше"</code>, иначе <code>"Меньше или равно"</code>.`,
+        expected: n > 10 ? 'Больше' : 'Меньше или равно',
+        expl: `Используй if (n > 10) { ... } else { ... }`,
+        code: `let n = Number(prompt());\nif (n > 10) {\n  console.log("Больше");\n} else {\n  console.log("Меньше или равно");\n}`,
+        hasPrompt: true,
+        input: String(n),
+        syntax: 'if-else'
+      };
+    }
+  },
+  'prompt': {
+    label: 'prompt() (ввод)',
+    icon: '⌨️',
+    gen: () => {
+      const n = ri(5, 50);
+      return {
+        task: `Через prompt() введи число <code>${n}</code>. Выведи его квадрат.`,
+        expected: String(n * n),
+        expl: `prompt() возвращает строку. Преобразуй в число: Number(prompt())`,
+        code: `let n = Number(prompt());\nconsole.log(n * n);`,
+        hasPrompt: true,
+        input: String(n),
+        syntax: 'prompt'
+      };
+    }
+  },
+  'console': {
+    label: 'console.log() (вывод)',
+    icon: '🖨️',
+    gen: () => {
+      const a = ri(2, 10), b = ri(2, 10);
+      return {
+        task: `Выведи в консоль сумму чисел <code>${a}</code> и <code>${b}</code>.`,
+        expected: String(a + b),
+        expl: `Используй console.log(a + b)`,
+        code: `console.log(${a} + ${b});`,
+        hasPrompt: false,
+        syntax: 'console'
+      };
+    }
+  },
+  'array': {
+    label: 'Массивы (array)',
+    icon: '📋',
+    gen: () => {
+      const arr = Array.from({length:ri(4,7)},()=>ri(1,20));
+      const sum = arr.reduce((a,b)=>a+b,0);
+      return {
+        task: `Дан массив: <code>[${arr.join(', ')}]</code>. Выведи сумму всех элементов.`,
+        expected: String(sum),
+        expl: `Пройдись по массиву циклом или используй .reduce()`,
+        code: `const arr = [${arr.join(', ')}];\nlet sum = 0;\nfor (let i = 0; i < arr.length; i++) {\n  sum += arr[i];\n}\nconsole.log(sum);`,
+        hasPrompt: false,
+        syntax: 'array'
+      };
+    }
+  },
+  'function': {
+    label: 'Функции (function)',
+    icon: '⚙️',
+    gen: () => {
+      const n = ri(3, 12);
+      return {
+        task: `Напиши функцию <code>square(n)</code>, возвращающую n². Проверь с <code>${n}</code>.`,
+        expected: String(n*n),
+        expl: `function square(n) { return n * n; }`,
+        code: `function square(n) {\n  return n * n;\n}\nconsole.log(square(${n}));`,
+        hasPrompt: false,
+        syntax: 'function'
+      };
+    }
+  }
+};
+
+// Search Logic
+function setupSearch() {
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+  
+  input.addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase().trim();
+    results.innerHTML = '';
+    if (!q) {
+      results.classList.remove('active');
+      return;
+    }
+    
+    // Filter keywords
+    const matches = Object.entries(KEYWORD_MAP).filter(([key, val]) => 
+      key.includes(q) || val.label.toLowerCase().includes(q)
+    );
+    
+    if (matches.length > 0) {
+      results.classList.add('active');
+      matches.forEach(([key, val]) => {
+        const div = document.createElement('div');
+        div.className = 'search-item';
+        div.innerHTML = `<span class="icon">${val.icon}</span><div class="info"><span class="title">${val.label}</span><span class="match">Ключевое слово: "${key}"</span></div>`;
+        div.onclick = () => {
+          state.activeKeyword = key;
+          state.topic = 'search'; // Temporary topic
+          input.value = '';
+          results.classList.remove('active');
+          loadTask();
+          closeMenu();
+        };
+        results.appendChild(div);
+      });
+    } else {
+      results.classList.remove('active');
+    }
+  });
 }
 
 /* ================= GENERATORS ================= */
 function genVars(){
-  const templates=[
-    ()=>{ const w=ra(['Кот','Солнце','JavaScript','Школа','Код','Мир','Робот','Пицца','Книга','Звезда']);
-      return{task:`Создай переменную <code>msg</code>, запиши в неё строку <code>"${w}"</code>. Выведи в консоль.`,expected:w,
-        expl:`1. Создай коробочку с помощью let и назови её msg.\n2. Запиши текст в кавычках: "${w}".\n3. Выведи через console.log(msg).`,
-        code:`let msg = "${w}";\nconsole.log(msg);`,hasPrompt:false};},
-    ()=>{ const a=ri(2,12),b=ri(2,12);
-      return{task:`Создай переменные <code>a=${a}</code> и <code>b=${b}</code>. Выведи в консоль их произведение.`,expected:String(a*b),
-        expl:`1. Объяви две переменные let a = ${a} и let b = ${b}.\n2. Умножь их: a * b.\n3. Выведи результат.`,
-        code:`let a = ${a};\nlet b = ${b};\nconsole.log(a * b);`,hasPrompt:false};},
-    ()=>{ const n=ri(5,50);
-      return{task:`Создай переменную <code>x=${n}</code>. Создай ещё одну переменную <code>y</code>, в которую запиши значение <code>x</code>, умноженное на <code>2</code>. Выведи <code>y</code>.`,expected:String(n*2),
-        expl:`1. Запиши число в x.\n2. Создай y и присвой ему x * 2.\n3. Выведи y в консоль.`,
-        code:`let x = ${n};\nlet y = x * 2;\nconsole.log(y);`,hasPrompt:false};},
-    ()=>{ const val=Math.random()>.5;
-      return{task:`Создай переменную <code>isReady</code> и запиши в неё значение <code>${val}</code>. Выведи в консоль тип этой переменной с помощью <code>typeof</code>.`,expected:String(typeof val),
-        expl:`1. Boolean — это логический тип: true или false.\n2. Оператор typeof возвращает строку с именем типа.\n3. typeof true вернёт "boolean".`,
-        code:`let isReady = ${val};\nconsole.log(typeof isReady);`,hasPrompt:false};},
-    ()=>{ const a=ri(1,10),b=ri(11,20);
-      return{task:`Создай переменную <code>n=${a}</code>. Затем переназначь её на <code>${b}</code>. Выведи финальное значение.`,expected:String(b),
-        expl:`1. Сначала запиши ${a} в n.\n2. Потом просто напиши n = ${b}; — это переназначит переменную.\n3. Выведи n.`,
-        code:`let n = ${a};\nn = ${b};\nconsole.log(n);`,hasPrompt:false};}
-  ];
-  return templates[getUniqueTemplateIndex('vars', templates.length)]();
+const templates=[
+()=>{ const w=ra(['Кот','Солнце','JavaScript','Школа','Код','Мир','Робот','Пицца','Книга','Звезда']);
+return{task:`Создай переменную <code>msg</code>, запиши в неё строку <code>"${w}"</code>. Выведи в консоль.`,expected:w,
+expl:`1. Создай коробочку с помощью let и назови её msg.\n2. Запиши текст в кавычках: "${w}".\n3. Выведи через console.log(msg).`,
+code:`let msg = "${w}";\nconsole.log(msg);`,hasPrompt:false};},
+()=>{ const a=ri(2,12),b=ri(2,12);
+return{task:`Создай переменные <code>a=${a}</code> и <code>b=${b}</code>. Выведи в консоль их произведение.`,expected:String(a*b),
+expl:`1. Объяви две переменные let a = ${a} и let b = ${b}.\n2. Умножь их: a * b.\n3. Выведи результат.`,
+code:`let a = ${a};\nlet b = ${b};\nconsole.log(a * b);`,hasPrompt:false};},
+()=>{ const n=ri(5,50);
+return{task:`Создай переменную <code>x=${n}</code>. Создай ещё одну переменную <code>y</code>, в которую запиши значение <code>x</code>, умноженное на <code>2</code>. Выведи <code>y</code>.`,expected:String(n*2),
+expl:`1. Запиши число в x.\n2. Создай y и присвой ему x * 2.\n3. Выведи y в консоль.`,
+code:`let x = ${n};\nlet y = x * 2;\nconsole.log(y);`,hasPrompt:false};},
+()=>{ const val=Math.random()>.5;
+return{task:`Создай переменную <code>isReady</code> и запиши в неё значение <code>${val}</code>. Выведи в консоль тип этой переменной с помощью <code>typeof</code>.`,expected:String(typeof val),
+expl:`1. Boolean — это логический тип: true или false.\n2. Оператор typeof возвращает строку с именем типа.\n3. typeof true вернёт "boolean".`,
+code:`let isReady = ${val};\nconsole.log(typeof isReady);`,hasPrompt:false};},
+()=>{ const a=ri(1,10),b=ri(11,20);
+return{task:`Создай переменную <code>n=${a}</code>. Затем переназначь её на <code>${b}</code>. Выведи финальное значение.`,expected:String(b),
+expl:`1. Сначала запиши ${a} в n.\n2. Потом просто напиши n = ${b}; — это переназначит переменную.\n3. Выведи n.`,
+code:`let n = ${a};\nn = ${b};\nconsole.log(n);`,hasPrompt:false};}
+];
+return templates[getUniqueTemplateIndex('vars', templates.length)]();
 }
-
 function genMath(){
-  const templates=[
-    ()=>{ const a=ri(3,20),b=ri(2,15);
-      return{task:`Выведи в консоль результат выражения: <code>${a} + ${b} × 3</code>.`,expected:String(a+b*3),
-        expl:`1. В JavaScript умножение — это звёздочка *.\n2. Умножение выполняется раньше сложения (как в математике).\n3. Напиши сразу: console.log(${a} + ${b} * 3);`,
-        code:`console.log(${a} + ${b} * 3);`,hasPrompt:false};},
-    ()=>{ const a=ri(10,100),b=ri(3,12);
-      return{task:`Раздели <code>${a}</code> на <code>${b}</code> и округли результат до ближайшего целого. Выведи.`,expected:String(Math.round(a/b)),
-        expl:`1. Деление — это /.\n2. Функция Math.round() округляет до ближайшего целого.\n3. Math.round(${a} / ${b}) даст ответ.`,
-        code:`console.log(Math.round(${a} / ${b}));`,hasPrompt:false};},
-    ()=>{ const a=ri(15,100),b=ri(3,9);
-      return{task:`Выведи остаток от деления <code>${a}</code> на <code>${b}</code>.`,expected:String(a%b),
-        expl:`1. Оператор % (остаток от деления) показывает, что осталось после деления.\n2. Например, 17 % 5 = 2, потому что 17 = 3×5 + 2.`,
-        code:`console.log(${a} % ${b});`,hasPrompt:false};},
-    ()=>{ const base=ri(2,9),exp=ri(2,4);
-      return{task:`Выведи в консоль <code>${base}</code> в степени <code>${exp}</code>.`,expected:String(base**exp),
-        expl:`1. Возведение в степень — это оператор **.\n2. ${base} ** ${exp} = ${base**exp}.\n3. Или используй Math.pow(${base}, ${exp}).`,
-        code:`console.log(${base} ** ${exp});\n// или: console.log(Math.pow(${base}, ${exp}));`,hasPrompt:false};},
-    ()=>{ const nums=Array.from({length:ri(3,5)},()=>ri(1,30)); const avg=nums.reduce((a,b)=>a+b,0)/nums.length;
-      return{task:`Найди среднее арифметическое чисел: <code>${nums.join(', ')}</code>. Выведи результат.`,expected:String(avg),
-        expl:`1. Сложи все числа.\n2. Раздели на их количество (${nums.length}).\n3. Можно сложить вручную или использовать массив.`,
-        code:`console.log((${nums.join(' + ')}) / ${nums.length});`,hasPrompt:false};}
-  ];
-  return templates[getUniqueTemplateIndex('math', templates.length)]();
+const templates=[
+()=>{ const a=ri(3,20),b=ri(2,15);
+return{task:`Выведи в консоль результат выражения: <code>${a} + ${b} × 3</code>.`,expected:String(a+b*3),
+expl:`1. В JavaScript умножение — это звёздочка *.\n2. Умножение выполняется раньше сложения (как в математике).\n3. Напиши сразу: console.log(${a} + ${b} * 3);`,
+code:`console.log(${a} + ${b} * 3);`,hasPrompt:false};},
+()=>{ const a=ri(10,100),b=ri(3,12);
+return{task:`Раздели <code>${a}</code> на <code>${b}</code> и округли результат до ближайшего целого. Выведи.`,expected:String(Math.round(a/b)),
+expl:`1. Деление — это /.\n2. Функция Math.round() округляет до ближайшего целого.\n3. Math.round(${a} / ${b}) даст ответ.`,
+code:`console.log(Math.round(${a} / ${b}));`,hasPrompt:false};},
+()=>{ const a=ri(15,100),b=ri(3,9);
+return{task:`Выведи остаток от деления <code>${a}</code> на <code>${b}</code>.`,expected:String(a%b),
+expl:`1. Оператор % (остаток от деления) показывает, что осталось после деления.\n2. Например, 17 % 5 = 2, потому что 17 = 3×5 + 2.`,
+code:`console.log(${a} % ${b});`,hasPrompt:false};},
+()=>{ const base=ri(2,9),exp=ri(2,4);
+return{task:`Выведи в консоль <code>${base}</code> в степени <code>${exp}</code>.`,expected:String(base**exp),
+expl:`1. Возведение в степень — это оператор **.\n2. ${base} ** ${exp} = ${base**exp}.\n3. Или используй Math.pow(${base}, ${exp}).`,
+code:`console.log(${base} ** ${exp});\n// или: console.log(Math.pow(${base}, ${exp}));`,hasPrompt:false};},
+()=>{ const nums=Array.from({length:ri(3,5)},()=>ri(1,30)); const avg=nums.reduce((a,b)=>a+b,0)/nums.length;
+return{task:`Найди среднее арифметическое чисел: <code>${nums.join(', ')}</code>. Выведи результат.`,expected:String(avg),
+expl:`1. Сложи все числа.\n2. Раздели на их количество (${nums.length}).\n3. Можно сложить вручную или использовать массив.`,
+code:`console.log((${nums.join(' + ')}) / ${nums.length});`,hasPrompt:false};}
+];
+return templates[getUniqueTemplateIndex('math', templates.length)]();
 }
-
 function genIf(){
-  const templates=[
-    ()=>{ const n=ri(-10,20);
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно положительное (> 0), выведи <code>"Да"</code>.`,expected:n>0?'Да':null,
-        expl:`1. prompt() всегда возвращает строку. Оберни в Number(), чтобы получить число.\n2. Запиши в переменную num.\n3. if (num > 0) { console.log("Да"); }.\n4. Если число не больше 0, ничего не произойдёт.`,
-        code:`let num = Number(prompt());\nif (num > 0) {\n    console.log("Да");\n}`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(1,30);
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно чётное, выведи <code>"Чётное"</code>.`,expected:n%2===0?'Чётное':null,
-        expl:`1. Чётное число делится на 2 без остатка.\n2. Оператор % даёт остаток: n % 2 === 0.\n3. Если условие верно — выведи "Чётное".`,
-        code:`let n = Number(prompt());\nif (n % 2 === 0) {\n    console.log("Чётное");\n}`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(0,30);
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно от 10 до 20 включительно, выведи <code>"В диапазоне"</code>.`,expected:n>=10&&n<=20?'В диапазоне':null,
-        expl:`1. Нужно проверить два условия одновременно.\n2. Используй && (И): n >= 10 && n <= 20.\n3. Если оба условия верны — выведи сообщение.`,
-        code:`let n = Number(prompt());\nif (n >= 10 && n <= 20) {\n    console.log("В диапазоне");\n}`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(0,100);
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно >= 50, выведи <code>"Много"</code>, иначе <code>"Мало"</code>.`,expected:n>=50?'Много':'Мало',
-        expl:`1. Это классическая конструкция if/else.\n2. if (n >= 50) — для первого случая.\n3. else — для всех остальных.\n4. В каждой ветке свой console.log.`,
-        code:`let n = Number(prompt());\nif (n >= 50) {\n    console.log("Много");\n} else {\n    console.log("Мало");\n}`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(1,20);
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно делится на 3, выведи <code>"Fizz"</code>. Если делится на 5, выведи <code>"Buzz"</code>. Если делится на оба — выведи <code>"FizzBuzz"</code>.`,expected:(n%3===0&&n%5===0)?'FizzBuzz':n%3===0?'Fizz':n%5===0?'Buzz':null,
-        expl:`1. Сначала проверяй самое строгое условие: делится ли на 3 И на 5.\n2. Если да — выведи "FizzBuzz".\n3. Потом отдельно проверь деление на 3 и на 5.\n4. Используй else if для цепочки условий.`,
-        code:`let n = Number(prompt());\nif (n % 3 === 0 && n % 5 === 0) {\n    console.log("FizzBuzz");\n} else if (n % 3 === 0) {\n    console.log("Fizz");\n} else if (n % 5 === 0) {\n    console.log("Buzz");\n}`,hasPrompt:true,input:String(n)};}
-  ];
-  return templates[getUniqueTemplateIndex('ifelse', templates.length)]();
+const templates=[
+()=>{ const n=ri(-10,20);
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно положительное (> 0), выведи <code>"Да"</code>.`,expected:n>0?'Да':null,
+expl:`1. prompt() всегда возвращает строку. Оберни в Number(), чтобы получить число.\n2. Запиши в переменную num.\n3. if (num > 0) { console.log("Да"); }.\n4. Если число не больше 0, ничего не произойдёт.`,
+code:`let num = Number(prompt());\nif (num > 0) {\nconsole.log("Да");\n}`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(1,30);
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно чётное, выведи <code>"Чётное"</code>.`,expected:n%2===0?'Чётное':null,
+expl:`1. Чётное число делится на 2 без остатка.\n2. Оператор % даёт остаток: n % 2 === 0.\n3. Если условие верно — выведи "Чётное".`,
+code:`let n = Number(prompt());\nif (n % 2 === 0) {\nconsole.log("Чётное");\n}`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(0,30);
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно от 10 до 20 включительно, выведи <code>"В диапазоне"</code>.`,expected:n>=10&&n<=20?'В диапазоне':null,
+expl:`1. Нужно проверить два условия одновременно.\n2. Используй && (И): n >= 10 && n <= 20.\n3. Если оба условия верны — выведи сообщение.`,
+code:`let n = Number(prompt());\nif (n >= 10 && n <= 20) {\nconsole.log("В диапазоне");\n}`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(0,100);
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно >= 50, выведи <code>"Много"</code>, иначе <code>"Мало"</code>.`,expected:n>=50?'Много':'Мало',
+expl:`1. Это классическая конструкция if/else.\n2. if (n >= 50) — для первого случая.\n3. else — для всех остальных.\n4. В каждой ветке свой console.log.`,
+code:`let n = Number(prompt());\nif (n >= 50) {\nconsole.log("Много");\n} else {\nconsole.log("Мало");\n}`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(1,20);
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Если оно делится на 3, выведи <code>"Fizz"</code>. Если делится на 5, выведи <code>"Buzz"</code>. Если делится на оба — выведи <code>"FizzBuzz"</code>.`,expected:(n%3===0&&n%5===0)?'FizzBuzz':n%3===0?'Fizz':n%5===0?'Buzz':null,
+expl:`1. Сначала проверяй самое строгое условие: делится ли на 3 И на 5.\n2. Если да — выведи "FizzBuzz".\n3. Потом отдельно проверь деление на 3 и на 5.\n4. Используй else if для цепочки условий.`,
+code:`let n = Number(prompt());\nif (n % 3 === 0 && n % 5 === 0) {\nconsole.log("FizzBuzz");\n} else if (n % 3 === 0) {\nconsole.log("Fizz");\n} else if (n % 5 === 0) {\nconsole.log("Buzz");\n}`,hasPrompt:true,input:String(n)};}
+];
+return templates[getUniqueTemplateIndex('ifelse', templates.length)]();
 }
-
 function genStr(){
-  const templates=[
-    ()=>{ const s1=ra(['Привет','Hello','Добрый','Крутой']),s2=ra(['мир','друг','день','код']);
-      return{task:`Создай <code>a="${s1}"</code> и <code>b="${s2}"</code>. Выведи в консоль <code>"${s1} ${s2}"</code> склеиванием.`,expected:`${s1} ${s2}`,
-        expl:`1. Строки склеиваются знаком плюс.\n2. Между словами нужен пробел: a + " " + b.\n3. Или шаблонная строка: \`${s1} \${s2}\`.`,
-        code:`let a = "${s1}";\nlet b = "${s2}";\nconsole.log(a + " " + b);`,hasPrompt:false};},
-    ()=>{ const s=ra(['JavaScript','Программирование','Компьютер','Молодец','Питон','Алгоритм']);
-      return{task:`Создай переменную <code>s="${s}"</code>. Выведи длину строки.`,expected:String(s.length),
-        expl:`1. У каждой строки есть свойство length.\n2. Оно считает все символы, включая пробелы.\n3. Напиши s.length.`,
-        code:`let s = "${s}";\nconsole.log(s.length);`,hasPrompt:false};},
-    ()=>{ const s=ra(['hello','мир','js','coding','test']);
-      return{task:`Дана строка <code>"${s}"</code>. Выведи её в верхнем регистре (все буквы большие).`,expected:s.toUpperCase(),
-        expl:`1. Метод .toUpperCase() превращает все буквы в заглавные.\n2. Напиши: console.log(s.toUpperCase());`,
-        code:`let s = "${s}";\nconsole.log(s.toUpperCase());`,hasPrompt:false};},
-    ()=>{ const s=ra(['JavaScript','Программирование','Алгоритмы','Разработчик']); const start=ri(1,3),end=start+ri(2,4); const sub=s.slice(start,end);
-      return{task:`Дана строка <code>"${s}"</code>. Выведи символы с позиции <code>${start}</code> по <code>${end}</code> (не включая ${end}).`,expected:sub,
-        expl:`1. Метод slice(start, end) вырезает часть строки.\n2. Позиции считаются с нуля.\n3. s.slice(${start}, ${end}) вернёт "${sub}".`,
-        code:`let s = "${s}";\nconsole.log(s.slice(${start}, ${end}));`,hasPrompt:false};},
-    ()=>{ const s=ra(['Я учу JavaScript','Программирование это весело','Люблю кодить']); const word=s.split(' ').reduce((w,wd)=>wd.length>3?wd:w,'');
-      return{task:`Дана строка <code>"${s}"</code>. Проверь, содержит ли она слово <code>"${word}"</code>. Выведи <code>true</code> или <code>false</code>.`,expected:String(s.includes(word)),
-        expl:`1. Метод .includes("слово") проверяет, есть ли подстрока в строке.\n2. Возвращает true или false.\n3. Выведи результат.`,
-        code:`let s = "${s}";\nconsole.log(s.includes("${word}"));`,hasPrompt:false};}
-  ];
-  return templates[getUniqueTemplateIndex('str', templates.length)]();
+const templates=[
+()=>{ const s1=ra(['Привет','Hello','Добрый','Крутой']),s2=ra(['мир','друг','день','код']);
+return{task:`Создай <code>a="${s1}"</code> и <code>b="${s2}"</code>. Выведи в консоль <code>"${s1} ${s2}"</code> склеиванием.`,expected:`${s1} ${s2}`,
+expl:`1. Строки склеиваются знаком плюс.\n2. Между словами нужен пробел: a + " " + b.\n3. Или шаблонная строка: \`${s1} \${s2}\`.`,
+code:`let a = "${s1}";\nlet b = "${s2}";\nconsole.log(a + " " + b);`,hasPrompt:false};},
+()=>{ const s=ra(['JavaScript','Программирование','Компьютер','Молодец','Питон','Алгоритм']);
+return{task:`Создай переменную <code>s="${s}"</code>. Выведи длину строки.`,expected:String(s.length),
+expl:`1. У каждой строки есть свойство length.\n2. Оно считает все символы, включая пробелы.\n3. Напиши s.length.`,
+code:`let s = "${s}";\nconsole.log(s.length);`,hasPrompt:false};},
+()=>{ const s=ra(['hello','мир','js','coding','test']);
+return{task:`Дана строка <code>"${s}"</code>. Выведи её в верхнем регистре (все буквы большие).`,expected:s.toUpperCase(),
+expl:`1. Метод .toUpperCase() превращает все буквы в заглавные.\n2. Напиши: console.log(s.toUpperCase());`,
+code:`let s = "${s}";\nconsole.log(s.toUpperCase());`,hasPrompt:false};},
+()=>{ const s=ra(['JavaScript','Программирование','Алгоритмы','Разработчик']); const start=ri(1,3),end=start+ri(2,4); const sub=s.slice(start,end);
+return{task:`Дана строка <code>"${s}"</code>. Выведи символы с позиции <code>${start}</code> по <code>${end}</code> (не включая ${end}).`,expected:sub,
+expl:`1. Метод slice(start, end) вырезает часть строки.\n2. Позиции считаются с нуля.\n3. s.slice(${start}, ${end}) вернёт "${sub}".`,
+code:`let s = "${s}";\nconsole.log(s.slice(${start}, ${end}));`,hasPrompt:false};},
+()=>{ const s=ra(['Я учу JavaScript','Программирование это весело','Люблю кодить']); const word=s.split(' ').reduce((w,wd)=>wd.length>3?wd:w,'');
+return{task:`Дана строка <code>"${s}"</code>. Проверь, содержит ли она слово <code>"${word}"</code>. Выведи <code>true</code> или <code>false</code>.`,expected:String(s.includes(word)),
+expl:`1. Метод .includes("слово") проверяет, есть ли подстрока в строке.\n2. Возвращает true или false.\n3. Выведи результат.`,
+code:`let s = "${s}";\nconsole.log(s.includes("${word}"));`,hasPrompt:false};}
+];
+return templates[getUniqueTemplateIndex('str', templates.length)]();
 }
-
 function genFunc(){
-  const templates=[
-    ()=>{ const n=ri(4,15);
-      return{task:`Напиши функцию <code>double(n)</code>, которая возвращает n × 2. Вызови с числом <code>${n}</code> и выведи.`,expected:String(n*2),
-        expl:`1. function double(n) { ... } — так объявляется функция.\n2. Внутри: return n * 2; — это отправляет результат обратно.\n3. Вызов: double(${n}) вернёт ${n*2}.`,
-        code:`function double(n) {\n    return n * 2;\n}\nconsole.log(double(${n}));`,hasPrompt:false};},
-    ()=>{ const n=ri(-10,15);
-      return{task:`Напиши функцию <code>isPositive(n)</code>. Если n > 0, верни <code>true</code>, иначе <code>false</code>. Проверь с числом <code>${n}</code>.`,expected:String(n>0),
-        expl:`1. Функция принимает число n.\n2. Верни результат сравнения: return n > 0;\n3. Это уже true или false, if не нужен!`,
-        code:`function isPositive(n) {\n    return n > 0;\n}\nconsole.log(isPositive(${n}));`,hasPrompt:false};},
-    ()=>{ const name=ra(['Аня','Борис','Катя','Дима','Ева','Макс']);
-      return{task:`Напиши функцию <code>greet(name)</code>, которая возвращает строку <code>"Привет, {name}!"</code>. Проверь с именем <code>"${name}"</code>.`,expected:`Привет, ${name}!`,
-        expl:`1. Функция принимает параметр name.\n2. Используй шаблонную строку с обратными кавычками.\n3. Вставь имя: \`Привет, \${name}!\`.`,
-        code:`function greet(name) {\n    return \`Привет, \${name}!\`;\n}\nconsole.log(greet("${name}"));`,hasPrompt:false};},
-    ()=>{ const n=ri(3,12);
-      return{task:`Напиши функцию <code>square(n)</code>, которая возвращает n² (n в квадрате). Проверь с <code>${n}</code>.`,expected:String(n*n),
-        expl:`1. Квадрат — это число умножить на само себя.\n2. Верни n * n.\n3. Или используй n ** 2.`,
-        code:`function square(n) {\n    return n * n;\n}\nconsole.log(square(${n}));`,hasPrompt:false};},
-    ()=>{ const a=ri(1,20),b=ri(1,20);
-      return{task:`Напиши функцию <code>max(a, b)</code>, которая возвращает большее из двух чисел. Проверь с <code>${a}</code> и <code>${b}</code>.`,expected:String(Math.max(a,b)),
-        expl:`1. Функция принимает два параметра.\n2. Сравни их через if: если a > b, верни a.\n3. Иначе верни b.\n4. Или просто верни Math.max(a, b).`,
-        code:`function max(a, b) {\n    return Math.max(a, b);\n}\nconsole.log(max(${a}, ${b}));`,hasPrompt:false};}
-  ];
-  return templates[getUniqueTemplateIndex('func', templates.length)]();
+const templates=[
+()=>{ const n=ri(4,15);
+return{task:`Напиши функцию <code>double(n)</code>, которая возвращает n × 2. Вызови с числом <code>${n}</code> и выведи.`,expected:String(n*2),
+expl:`1. function double(n) { ... } — так объявляется функция.\n2. Внутри: return n * 2; — это отправляет результат обратно.\n3. Вызов: double(${n}) вернёт ${n*2}.`,
+code:`function double(n) {\nreturn n * 2;\n}\nconsole.log(double(${n}));`,hasPrompt:false};},
+()=>{ const n=ri(-10,15);
+return{task:`Напиши функцию <code>isPositive(n)</code>. Если n > 0, верни <code>true</code>, иначе <code>false</code>. Проверь с числом <code>${n}</code>.`,expected:String(n>0),
+expl:`1. Функция принимает число n.\n2. Верни результат сравнения: return n > 0;\n3. Это уже true или false, if не нужен!`,
+code:`function isPositive(n) {\nreturn n > 0;\n}\nconsole.log(isPositive(${n}));`,hasPrompt:false};},
+()=>{ const name=ra(['Аня','Борис','Катя','Дима','Ева','Макс']);
+return{task:`Напиши функцию <code>greet(name)</code>, которая возвращает строку <code>"Привет, {name}!"</code>. Проверь с именем <code>"${name}"</code>.`,expected:`Привет, ${name}!`,
+expl:`1. Функция принимает параметр name.\n2. Используй шаблонную строку с обратными кавычками.\n3. Вставь имя: \`Привет, \${name}!\`.`,
+code:`function greet(name) {\nreturn \`Привет, \${name}!\`;\n}\nconsole.log(greet("${name}"));`,hasPrompt:false};},
+()=>{ const n=ri(3,12);
+return{task:`Напиши функцию <code>square(n)</code>, которая возвращает n² (n в квадрате). Проверь с <code>${n}</code>.`,expected:String(n*n),
+expl:`1. Квадрат — это число умножить на само себя.\n2. Верни n * n.\n3. Или используй n ** 2.`,
+code:`function square(n) {\nreturn n * n;\n}\nconsole.log(square(${n}));`,hasPrompt:false};},
+()=>{ const a=ri(1,20),b=ri(1,20);
+return{task:`Напиши функцию <code>max(a, b)</code>, которая возвращает большее из двух чисел. Проверь с <code>${a}</code> и <code>${b}</code>.`,expected:String(Math.max(a,b)),
+expl:`1. Функция принимает два параметра.\n2. Сравни их через if: если a > b, верни a.\n3. Иначе верни b.\n4. Или просто верни Math.max(a, b).`,
+code:`function max(a, b) {\nreturn Math.max(a, b);\n}\nconsole.log(max(${a}, ${b}));`,hasPrompt:false};}
+];
+return templates[getUniqueTemplateIndex('func', templates.length)]();
 }
-
 function genLoop(){
-  const templates=[
-    ()=>{ const n=ri(3,9); const out=Array.from({length:n},(_,i)=>i+1).join('\n');
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи все числа от 1 до этого числа, каждое на новой строке.`,expected:out,
-        expl:`1. Считай число в переменную limit.\n2. Запусти цикл for: пусть i начинается с 1 и идёт до limit включительно.\n3. Внутри цикла: console.log(i).`,
-        code:`let limit = Number(prompt());\nfor (let i = 1; i <= limit; i++) {\n    console.log(i);\n}`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(3,12); const sum=n*(n+1)/2;
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Посчитай сумму чисел от 1 до n и выведи её.`,expected:String(sum),
-        expl:`1. Создай переменную sum = 0.\n2. В цикле от 1 до n прибавляй i к sum.\n3. После цикла выведи sum.`,
-        code:`let n = Number(prompt());\nlet sum = 0;\nfor (let i = 1; i <= n; i++) {\n    sum += i;\n}\nconsole.log(sum);`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(3,8); const fact=n=>n<=1?1:n*fact(n-1);
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи его факториал (произведение всех чисел от 1 до n).`,expected:String(fact(n)),
-        expl:`1. Факториал ${n}! = 1 × 2 × 3 × ... × ${n}.\n2. Создай переменную fact = 1.\n3. В цикле умножай: fact *= i.\n4. Выведи результат.`,
-        code:`let n = Number(prompt());\nlet fact = 1;\nfor (let i = 1; i <= n; i++) {\n    fact *= i;\n}\nconsole.log(fact);`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(10,20); const out=Array.from({length:Math.ceil(n/2)},(_,i)=>(i+1)*2).reverse().join('\n');
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи все чётные числа от n до 2 (в убывающем порядке), каждое на новой строке.`,expected:out,
-        expl:`1. Начни цикл с n и иди вниз до 2.\n2. На каждом шаге проверяй: если число чётное (i % 2 === 0), выводи его.\n3. Или начни с ближайшего чётного и уменьшай на 2.`,
-        code:`let n = Number(prompt());\nfor (let i = n; i >= 2; i--) {\n    if (i % 2 === 0) {\n        console.log(i);\n    }\n}`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(3,8); const w=ra(['JS','Код','Привет','Ура']); const out=Array(n).fill(w).join('\n');
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи слово <code>"${w}"</code> ровно ${n} раз, каждое на новой строке.`,expected:out,
-        expl:`1. Запусти цикл от 1 до n.\n2. На каждом шаге выводи слово "${w}".\n3. Цикл выполнится ровно n раз.`,
-        code:`let n = Number(prompt());\nfor (let i = 0; i < n; i++) {\n    console.log("${w}");\n}`,hasPrompt:true,input:String(n)};}
-  ];
-  return templates[getUniqueTemplateIndex('loop', templates.length)]();
+const templates=[
+()=>{ const n=ri(3,9); const out=Array.from({length:n},(_,i)=>i+1).join('\n');
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи все числа от 1 до этого числа, каждое на новой строке.`,expected:out,
+expl:`1. Считай число в переменную limit.\n2. Запусти цикл for: пусть i начинается с 1 и идёт до limit включительно.\n3. Внутри цикла: console.log(i).`,
+code:`let limit = Number(prompt());\nfor (let i = 1; i <= limit; i++) {\nconsole.log(i);\n}`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(3,12); const sum=n*(n+1)/2;
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Посчитай сумму чисел от 1 до n и выведи её.`,expected:String(sum),
+expl:`1. Создай переменную sum = 0.\n2. В цикле от 1 до n прибавляй i к sum.\n3. После цикла выведи sum.`,
+code:`let n = Number(prompt());\nlet sum = 0;\nfor (let i = 1; i <= n; i++) {\nsum += i;\n}\nconsole.log(sum);`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(3,8); const fact=n=>n<=1?1:n*fact(n-1);
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи его факториал (произведение всех чисел от 1 до n).`,expected:String(fact(n)),
+expl:`1. Факториал ${n}! = 1 × 2 × 3 × ... × ${n}.\n2. Создай переменную fact = 1.\n3. В цикле умножай: fact *= i.\n4. Выведи результат.`,
+code:`let n = Number(prompt());\nlet fact = 1;\nfor (let i = 1; i <= n; i++) {\nfact *= i;\n}\nconsole.log(fact);`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(10,20); const out=Array.from({length:Math.ceil(n/2)},(_,i)=>(i+1)*2).reverse().join('\n');
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи все чётные числа от n до 2 (в убывающем порядке), каждое на новой строке.`,expected:out,
+expl:`1. Начни цикл с n и иди вниз до 2.\n2. На каждом шаге проверяй: если число чётное (i % 2 === 0), выводи его.\n3. Или начни с ближайшего чётного и уменьшай на 2.`,
+code:`let n = Number(prompt());\nfor (let i = n; i >= 2; i--) {\nif (i % 2 === 0) {\nconsole.log(i);\n}\n}`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(3,8); const w=ra(['JS','Код','Привет','Ура']); const out=Array(n).fill(w).join('\n');
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи слово <code>"${w}"</code> ровно ${n} раз, каждое на новой строке.`,expected:out,
+expl:`1. Запусти цикл от 1 до n.\n2. На каждом шаге выводи слово "${w}".\n3. Цикл выполнится ровно n раз.`,
+code:`let n = Number(prompt());\nfor (let i = 0; i < n; i++) {\nconsole.log("${w}");\n}`,hasPrompt:true,input:String(n)};}
+];
+return templates[getUniqueTemplateIndex('loop', templates.length)]();
 }
-
 function genArr(){
-  const templates=[
-    ()=>{ const arr=Array.from({length:ri(4,7)},()=>ri(1,20)); const sum=arr.reduce((a,b)=>a+b,0);
-      return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Выведи сумму всех элементов.`,expected:String(sum),
-        expl:`1. Создай массив const arr = [${arr.join(', ')}].\n2. Создай переменную sum = 0.\n3. Пройдись циклом по массиву и прибавляй каждый элемент к sum.\n4. Или используй arr.reduce((a, b) => a + b, 0).`,
-        code:`const arr = [${arr.join(', ')}];\nlet sum = 0;\nfor (let i = 0; i < arr.length; i++) {\n    sum += arr[i];\n}\nconsole.log(sum);`,hasPrompt:false};},
-    ()=>{ const arr=Array.from({length:ri(4,8)},()=>ri(-10,30)); const max=Math.max(...arr);
-      return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Выведи максимальный элемент.`,expected:String(max),
-        expl:`1. Math.max() ищет наибольшее число.\n2. ...arr (спред-оператор) «раскрывает» массив в отдельные аргументы.\n3. Math.max(...arr) вернёт ${max}.`,
-        code:`const arr = [${arr.join(', ')}];\nconsole.log(Math.max(...arr));`,hasPrompt:false};},
-    ()=>{ const arr=Array.from({length:ri(5,9)},()=>ri(1,20)); const evens=arr.filter(x=>x%2===0).length;
-      return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Посчитай и выведи количество чётных чисел в массиве.`,expected:String(evens),
-        expl:`1. Создай счётчик count = 0.\n2. Пройдись по массиву циклом.\n3. Если arr[i] % 2 === 0, увеличь счётчик: count++.\n4. Выведи count.`,
-        code:`const arr = [${arr.join(', ')}];\nlet count = 0;\nfor (let i = 0; i < arr.length; i++) {\n    if (arr[i] % 2 === 0) {\n        count++;\n    }\n}\nconsole.log(count);`,hasPrompt:false};},
-    ()=>{ const arr=Array.from({length:ri(4,7)},()=>ri(1,15)); const rev=[...arr].reverse();
-      return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Выведи элементы в обратном порядке, каждый на новой строке.`,expected:rev.join('\n'),
-        expl:`1. Цикл идёт с конца: let i = arr.length - 1.\n2. Условие: i >= 0.\n3. Шаг: i-- (уменьшаем на 1).\n4. Внутри: console.log(arr[i]).`,
-        code:`const arr = [${arr.join(', ')}];\nfor (let i = arr.length - 1; i >= 0; i--) {\n    console.log(arr[i]);\n}`,hasPrompt:false};},
-    ()=>{ const arr=Array.from({length:ri(5,8)},()=>ri(-15,20)); const pos=arr.filter(x=>x>0).join('\n');
-      return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Выведи все положительные числа, каждое на новой строке.`,expected:pos,
-        expl:`1. Пройдись по массиву циклом.\n2. Проверяй условие: arr[i] > 0.\n3. Если верно — выводи число.`,
-        code:`const arr = [${arr.join(', ')}];\nfor (let i = 0; i < arr.length; i++) {\n    if (arr[i] > 0) {\n        console.log(arr[i]);\n    }\n}`,hasPrompt:false};},
-    ()=>{ const arr=shuffle([ri(10,50),ri(1,9),ri(1,9),ri(1,9),ri(1,9)]); const sorted=[...new Set(arr)].sort((a,b)=>b-a); const second=sorted[1]||sorted[0];
-      return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Найди и выведи второй по величине уникальный элемент.`,expected:String(second),
-        expl:`1. Сначала убери повторы через [...new Set(arr)].\n2. Отсортируй по убыванию: .sort((a, b) => b - a).\n3. Второй элемент — это индекс [1].`,
-        code:`const arr = [${arr.join(', ')}];\nconst unique = [...new Set(arr)];\nunique.sort((a, b) => b - a);\nconsole.log(unique[1]);`,hasPrompt:false};}
-  ];
-  return templates[getUniqueTemplateIndex('arr', templates.length)]();
+const templates=[
+()=>{ const arr=Array.from({length:ri(4,7)},()=>ri(1,20)); const sum=arr.reduce((a,b)=>a+b,0);
+return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Выведи сумму всех элементов.`,expected:String(sum),
+expl:`1. Создай массив const arr = [${arr.join(', ')}].\n2. Создай переменную sum = 0.\n3. Пройдись циклом по массиву и прибавляй каждый элемент к sum.\n4. Или используй arr.reduce((a, b) => a + b, 0).`,
+code:`const arr = [${arr.join(', ')}];\nlet sum = 0;\nfor (let i = 0; i < arr.length; i++) {\nsum += arr[i];\n}\nconsole.log(sum);`,hasPrompt:false};},
+()=>{ const arr=Array.from({length:ri(4,8)},()=>ri(-10,30)); const max=Math.max(...arr);
+return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Выведи максимальный элемент.`,expected:String(max),
+expl:`1. Math.max() ищет наибольшее число.\n2. ...arr (спред-оператор) «раскрывает» массив в отдельные аргументы.\n3. Math.max(...arr) вернёт ${max}.`,
+code:`const arr = [${arr.join(', ')}];\nconsole.log(Math.max(...arr));`,hasPrompt:false};},
+()=>{ const arr=Array.from({length:ri(5,9)},()=>ri(1,20)); const evens=arr.filter(x=>x%2===0).length;
+return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Посчитай и выведи количество чётных чисел в массиве.`,expected:String(evens),
+expl:`1. Создай счётчик count = 0.\n2. Пройдись по массиву циклом.\n3. Если arr[i] % 2 === 0, увеличь счётчик: count++.\n4. Выведи count.`,
+code:`const arr = [${arr.join(', ')}];\nlet count = 0;\nfor (let i = 0; i < arr.length; i++) {\nif (arr[i] % 2 === 0) {\ncount++;\n}\n}\nconsole.log(count);`,hasPrompt:false};},
+()=>{ const arr=Array.from({length:ri(4,7)},()=>ri(1,15)); const rev=[...arr].reverse();
+return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Выведи элементы в обратном порядке, каждый на новой строке.`,expected:rev.join('\n'),
+expl:`1. Цикл идёт с конца: let i = arr.length - 1.\n2. Условие: i >= 0.\n3. Шаг: i-- (уменьшаем на 1).\n4. Внутри: console.log(arr[i]).`,
+code:`const arr = [${arr.join(', ')}];\nfor (let i = arr.length - 1; i >= 0; i--) {\nconsole.log(arr[i]);\n}`,hasPrompt:false};},
+()=>{ const arr=Array.from({length:ri(5,8)},()=>ri(-15,20)); const pos=arr.filter(x=>x>0).join('\n');
+return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Выведи все положительные числа, каждое на новой строке.`,expected:pos,
+expl:`1. Пройдись по массиву циклом.\n2. Проверяй условие: arr[i] > 0.\n3. Если верно — выводи число.`,
+code:`const arr = [${arr.join(', ')}];\nfor (let i = 0; i < arr.length; i++) {\nif (arr[i] > 0) {\nconsole.log(arr[i]);\n}\n}`,hasPrompt:false};},
+()=>{ const arr=shuffle([ri(10,50),ri(1,9),ri(1,9),ri(1,9),ri(1,9)]); const sorted=[...new Set(arr)].sort((a,b)=>b-a); const second=sorted[1]||sorted[0];
+return{task:`Дан массив: <code>[${arr.join(', ')}]</code>. Найди и выведи второй по величине уникальный элемент.`,expected:String(second),
+expl:`1. Сначала убери повторы через [...new Set(arr)].\n2. Отсортируй по убыванию: .sort((a, b) => b - a).\n3. Второй элемент — это индекс [1].`,
+code:`const arr = [${arr.join(', ')}];\nconst unique = [...new Set(arr)];\nunique.sort((a, b) => b - a);\nconsole.log(unique[1]);`,hasPrompt:false};}
+];
+return templates[getUniqueTemplateIndex('arr', templates.length)]();
 }
-
 function genAlgo(){
-  const templates=[
-    ()=>{ const n=ri(2,30); const isP=v=>{if(v<2)return false;for(let i=2;i<=Math.sqrt(v);i++)if(v%i===0)return false;return true;};
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Определи, простое оно или нет. Выведи <code>"Простое"</code> или <code>"Не простое"</code>.`,expected:isP(n)?'Простое':'Не простое',
-        expl:`1. Простое число > 1 и делится только на 1 и на себя.\n2. Запусти цикл от 2 до √n.\n3. Если n % i === 0 — значит не простое.\n4. Если дошли до конца цикла — простое.`,
-        code:`let n = Number(prompt());\nlet isPrime = n >= 2;\nfor (let i = 2; i <= Math.sqrt(n); i++) {\n    if (n % i === 0) { isPrime = false; break; }\n}\nconsole.log(isPrime ? "Простое" : "Не простое");`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(5,10); let a=0,b=1;const fib=[0,1];for(let i=2;i<n;i++){[a,b]=[b,a+b];fib.push(b);}
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи первые ${n} чисел Фибоначчи, каждое на новой строке (начиная с 0, 1).`,expected:fib.join('\n'),
-        expl:`1. Числа Фибоначчи: каждое следующее = сумма двух предыдущих.\n2. Начни с a=0, b=1.\n3. В цикле: выводи a, затем сдвигай: новое a = b, новое b = a+b.\n4. Повтори n раз.`,
-        code:`let n = Number(prompt());\nlet a = 0, b = 1;\nfor (let i = 0; i < n; i++) {\n    console.log(a);\n    let temp = a + b;\n    a = b;\n    b = temp;\n}`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(6,24); const divs=[];for(let i=1;i<=n;i++)if(n%i===0)divs.push(i);
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи все его делители в порядке возрастания, каждый на новой строке.`,expected:divs.join('\n'),
-        expl:`1. Делитель — число, на которое n делится без остатка.\n2. Пройдись циклом от 1 до n.\n3. Если n % i === 0 — значит i делитель, выводи его.`,
-        code:`let n = Number(prompt());\nfor (let i = 1; i <= n; i++) {\n    if (n % i === 0) {\n        console.log(i);\n    }\n}`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(100,9999); const sum=String(n).split('').reduce((a,d)=>a+Number(d),0);
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи сумму его цифр.`,expected:String(sum),
-        expl:`1. Преврати число в строку: String(n).\n2. Разбей на символы: .split('').\n3. Каждый символ преврати обратно в число и сложи.\n4. Или бери последнюю цифру через % 10 и дели на 10.`,
-        code:`let n = Number(prompt());\nlet sum = 0;\nwhile (n > 0) {\n    sum += n % 10;\n    n = Math.floor(n / 10);\n}\nconsole.log(sum);`,hasPrompt:true,input:String(n)};},
-    ()=>{ const n=ri(100,9999); const rev=Number(String(n).split('').reverse().join(''));
-      return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи число, записанное задом наперёд (без лидирующих нулей).`,expected:String(rev),
-        expl:`1. Преврати число в строку.\n2. Разбей на символы, переверни массив, собери обратно.\n3. Преврати в число, чтобы убрать ведущие нули.\n4. Выведи результат.`,
-        code:`let n = prompt();\nconsole.log(Number(n.split('').reverse().join('')));`,hasPrompt:true,input:String(n)};},
-    ()=>{ const a=ri(12,100),b=ri(12,100); const gcd=(x,y)=>{while(y){[x,y]=[y,x%y];}return x;};
-      return{task:`Даны числа: <code>${a}</code> и <code>${b}</code>. Найди их наибольший общий делитель (НОД) и выведи.`,expected:String(gcd(a,b)),
-        expl:`1. Алгоритм Евклида: пока b ≠ 0, заменяй (a, b) на (b, a % b).\n2. Когда b станет 0, a — это НОД.\n3. Используй while и деструктуризацию.`,
-        code:`let a = ${a}, b = ${b};\nwhile (b !== 0) {\n    let temp = b;\n    b = a % b;\n    a = temp;\n}\nconsole.log(a);`,hasPrompt:false};}
-  ];
-  return templates[getUniqueTemplateIndex('algo', templates.length)]();
+const templates=[
+()=>{ const n=ri(2,30); const isP=v=>{if(v<2)return false;for(let i=2;i<=Math.sqrt(v);i++)if(v%i===0)return false;return true;};
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Определи, простое оно или нет. Выведи <code>"Простое"</code> или <code>"Не простое"</code>.`,expected:isP(n)?'Простое':'Не простое',
+expl:`1. Простое число > 1 и делится только на 1 и на себя.\n2. Запусти цикл от 2 до √n.\n3. Если n % i === 0 — значит не простое.\n4. Если дошли до конца цикла — простое.`,
+code:`let n = Number(prompt());\nlet isPrime = n >= 2;\nfor (let i = 2; i <= Math.sqrt(n); i++) {\nif (n % i === 0) { isPrime = false; break; }\n}\nconsole.log(isPrime ? "Простое" : "Не простое");`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(5,10); let a=0,b=1;const fib=[0,1];for(let i=2;i<n;i++){[a,b]=[b,a+b];fib.push(b);}
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи первые ${n} чисел Фибоначчи, каждое на новой строке (начиная с 0, 1).`,expected:fib.join('\n'),
+expl:`1. Числа Фибоначчи: каждое следующее = сумма двух предыдущих.\n2. Начни с a=0, b=1.\n3. В цикле: выводи a, затем сдвигай: новое a = b, новое b = a+b.\n4. Повтори n раз.`,
+code:`let n = Number(prompt());\nlet a = 0, b = 1;\nfor (let i = 0; i < n; i++) {\nconsole.log(a);\nlet temp = a + b;\na = b;\nb = temp;\n}`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(6,24); const divs=[];for(let i=1;i<=n;i++)if(n%i===0)divs.push(i);
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи все его делители в порядке возрастания, каждый на новой строке.`,expected:divs.join('\n'),
+expl:`1. Делитель — число, на которое n делится без остатка.\n2. Пройдись циклом от 1 до n.\n3. Если n % i === 0 — значит i делитель, выводи его.`,
+code:`let n = Number(prompt());\nfor (let i = 1; i <= n; i++) {\nif (n % i === 0) {\nconsole.log(i);\n}\n}`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(100,9999); const sum=String(n).split('').reduce((a,d)=>a+Number(d),0);
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи сумму его цифр.`,expected:String(sum),
+expl:`1. Преврати число в строку: String(n).\n2. Разбей на символы: .split('').\n3. Каждый символ преврати обратно в число и сложи.\n4. Или бери последнюю цифру через % 10 и дели на 10.`,
+code:`let n = Number(prompt());\nlet sum = 0;\nwhile (n > 0) {\nsum += n % 10;\nn = Math.floor(n / 10);\n}\nconsole.log(sum);`,hasPrompt:true,input:String(n)};},
+()=>{ const n=ri(100,9999); const rev=Number(String(n).split('').reverse().join(''));
+return{task:`Через <code>prompt()</code> введи число <code>${n}</code>. Выведи число, записанное задом наперёд (без лидирующих нулей).`,expected:String(rev),
+expl:`1. Преврати число в строку.\n2. Разбей на символы, переверни массив, собери обратно.\n3. Преврати в число, чтобы убрать ведущие нули.\n4. Выведи результат.`,
+code:`let n = prompt();\nconsole.log(Number(n.split('').reverse().join('')));`,hasPrompt:true,input:String(n)};},
+()=>{ const a=ri(12,100),b=ri(12,100); const gcd=(x,y)=>{while(y){[x,y]=[y,x%y];}return x;};
+return{task:`Даны числа: <code>${a}</code> и <code>${b}</code>. Найди их наибольший общий делитель (НОД) и выведи.`,expected:String(gcd(a,b)),
+expl:`1. Алгоритм Евклида: пока b ≠ 0, заменяй (a, b) на (b, a % b).\n2. Когда b станет 0, a — это НОД.\n3. Используй while и деструктуризацию.`,
+code:`let a = ${a}, b = ${b};\nwhile (b !== 0) {\nlet temp = b;\nb = a % b;\na = temp;\n}\nconsole.log(a);`,hasPrompt:false};}
+];
+return templates[getUniqueTemplateIndex('algo', templates.length)]();
 }
 
 const GEN={vars:genVars,math:genMath,ifelse:genIf,str:genStr,func:genFunc,loop:genLoop,arr:genArr,algo:genAlgo};
 
 /* ================= UI ================= */
 function setupMenu(){
-  const acc=document.getElementById('topic-accordion');
-  acc.innerHTML='';
-  TOPICS.forEach(topic=>{
-    const group=document.createElement('div');
-    group.className='topic-group';
-    const header=document.createElement('div');
-    header.className='topic-header';
-    header.innerHTML=`<span class="t-name">${topic.icon} ${topic.name}</span><span class="arrow">▶</span>`;
-    header.onclick=()=>group.classList.toggle('open');
-    const levels=document.createElement('div');
-    levels.className='topic-levels';
-    const grid=document.createElement('div');
-    grid.className='lvl-grid';
-    LEVELS.forEach(lv=>{
-      const btn=document.createElement('button');
-      btn.className='lvl-btn';
-      btn.textContent='Ур.'+lv;
-      btn.onclick=e=>{
-        e.stopPropagation();
-        document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        state.level=lv;state.topic=topic.id;
-        loadTask();closeMenu();
-      };
-      grid.appendChild(btn);
-    });
-    levels.appendChild(grid);
-    group.appendChild(header);
-    group.appendChild(levels);
-    acc.appendChild(group);
-  });
-  renderActivityGraph();
-  updateStats();
+setupSearch();
+const acc=document.getElementById('topic-accordion');
+acc.innerHTML='';
+TOPICS.forEach(topic=>{
+const group=document.createElement('div');
+group.className='topic-group';
+const header=document.createElement('div');
+header.className='topic-header';
+header.innerHTML=`<span class="t-name">${topic.icon} ${topic.name}</span><span class="arrow">▶</span>`;
+header.onclick=()=>{
+state.activeKeyword = null; // Clear keyword on manual selection
+document.getElementById('search-input').value = '';
+group.classList.toggle('open');
+};
+const levels=document.createElement('div');
+levels.className='topic-levels';
+const grid=document.createElement('div');
+grid.className='lvl-grid';
+LEVELS.forEach(lv=>{
+const btn=document.createElement('button');
+btn.className='lvl-btn';
+btn.textContent='Ур.'+lv;
+btn.onclick=e=>{
+e.stopPropagation();
+state.activeKeyword = null; // Clear keyword on manual selection
+document.getElementById('search-input').value = '';
+document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.remove('active'));
+btn.classList.add('active');
+state.level=lv;state.topic=topic.id;
+loadTask();closeMenu();
+};
+grid.appendChild(btn);
+});
+levels.appendChild(grid);
+group.appendChild(header);
+group.appendChild(levels);
+acc.appendChild(group);
+});
+renderActivityGraph();
+updateStats();
 }
-
 function renderActivityGraph(){
-  const container=document.getElementById('contribution-graph');
-  container.innerHTML='';
-  
-  // Get all dates from first activity to today
-  const today=new Date();
-  let startDate=new Date();
-  
-  if(state.firstActivityDate){
-    startDate=new Date(state.firstActivityDate);
-  }else{
-    // If no activity yet, show last 365 days empty
-    startDate=new Date();
-    startDate.setDate(startDate.getDate()-364);
-  }
-  
-  // Calculate stats
-  let currentStreak=0;
-  let bestStreak=state.bestStreak||0;
-  let tempStreak=0;
-  let checkDate=new Date(today);
-  
-  // Calculate current streak
-  while(true){
-    const dateKey=formatDate(checkDate);
-    if(state.dailyProgress[dateKey] && state.dailyProgress[dateKey].solved>0){
-      tempStreak++;
-      checkDate.setDate(checkDate.getDate()-1);
-    }else if(checkDate.toDateString()===today.toDateString()){
-      // Today might not have activity yet, continue
-      checkDate.setDate(checkDate.getDate()-1);
-    }else{
-      break;
-    }
-  }
-  currentStreak=tempStreak;
-  if(currentStreak>bestStreak) bestStreak=currentStreak;
-  state.bestStreak=bestStreak;
-  
-  // Get max solved for color scaling
-  let maxSolved=0;
-  const dates=[];
-  let d=new Date(startDate);
-  while(d<=today){
-    const key=formatDate(d);
-    const solved=state.dailyProgress[key]?.solved||0;
-    if(solved>maxSolved) maxSolved=solved;
-    dates.push({date:new Date(d), key, solved});
-    d.setDate(d.getDate()+1);
-  }
-  
-  // Group by weeks
-  const weeks=[];
-  let currentWeek=[];
-  dates.forEach(day=>{
-    if(day.date.getDay()===0 && currentWeek.length>0){
-      // Pad previous week to 7 days
-      while(currentWeek.length<7) currentWeek.unshift(null);
-      weeks.push(currentWeek);
-      currentWeek=[];
-    }
-    currentWeek.push(day);
-  });
-  if(currentWeek.length>0){
-    while(currentWeek.length<7) currentWeek.push(null);
-    weeks.push(currentWeek);
-  }
-  
-  // Create graph
-  const graphContainer=document.createElement('div');
-  graphContainer.className='graph-container';
-  
-  const weeksContainer=document.createElement('div');
-  weeksContainer.className='graph-weeks';
-  
-  weeks.forEach(week=>{
-    const weekDiv=document.createElement('div');
-    week.forEach(day=>{
-      const dayDiv=document.createElement('div');
-      dayDiv.className='graph-day';
-      if(day){
-        let level=0;
-        if(day.solved>0){
-          if(maxSolved===0) level=1;
-          else{
-            const ratio=day.solved/maxSolved;
-            if(ratio<0.25) level=1;
-            else if(ratio<0.5) level=2;
-            else if(ratio<0.75) level=3;
-            else level=4;
-          }
-        }
-        dayDiv.className+=` level-${level}`;
-        dayDiv.dataset.date=day.key;
-        dayDiv.dataset.solved=day.solved;
-        dayDiv.addEventListener('mouseenter',showTooltip);
-        dayDiv.addEventListener('mouseleave',hideTooltip);
-      }else{
-        dayDiv.className+=' level-0';
-      }
-      weekDiv.appendChild(dayDiv);
-    });
-    weeksContainer.appendChild(weekDiv);
-  });
-  
-  graphContainer.appendChild(weeksContainer);
-  container.appendChild(graphContainer);
-  
-  // Update stats
-  document.getElementById('stat-current-streak').textContent=currentStreak;
-  document.getElementById('stat-best-streak').textContent=bestStreak;
-  document.getElementById('stat-total-solved').textContent=state.solved;
+const container=document.getElementById('contribution-graph');
+container.innerHTML='';
+const today=new Date();
+let startDate=new Date();
+if(state.firstActivityDate){
+startDate=new Date(state.firstActivityDate);
+}else{
+startDate=new Date();
+startDate.setDate(startDate.getDate()-364);
 }
-
+let currentStreak=0;
+let bestStreak=state.bestStreak||0;
+let tempStreak=0;
+let checkDate=new Date(today);
+while(true){
+const dateKey=formatDate(checkDate);
+if(state.dailyProgress[dateKey] && state.dailyProgress[dateKey].solved>0){
+tempStreak++;
+checkDate.setDate(checkDate.getDate()-1);
+}else if(checkDate.toDateString()===today.toDateString()){
+checkDate.setDate(checkDate.getDate()-1);
+}else{
+break;
+}
+}
+currentStreak=tempStreak;
+if(currentStreak>bestStreak) bestStreak=currentStreak;
+state.bestStreak=bestStreak;
+let maxSolved=0;
+const dates=[];
+let d=new Date(startDate);
+while(d<=today){
+const key=formatDate(d);
+const solved=state.dailyProgress[key]?.solved||0;
+if(solved>maxSolved) maxSolved=solved;
+dates.push({date:new Date(d), key, solved});
+d.setDate(d.getDate()+1);
+}
+const weeks=[];
+let currentWeek=[];
+dates.forEach(day=>{
+if(day.date.getDay()===0 && currentWeek.length>0){
+while(currentWeek.length<7) currentWeek.unshift(null);
+weeks.push(currentWeek);
+currentWeek=[];
+}
+currentWeek.push(day);
+});
+if(currentWeek.length>0){
+while(currentWeek.length<7) currentWeek.push(null);
+weeks.push(currentWeek);
+}
+const graphContainer=document.createElement('div');
+graphContainer.className='graph-container';
+const weeksContainer=document.createElement('div');
+weeksContainer.className='graph-weeks';
+weeks.forEach(week=>{
+const weekDiv=document.createElement('div');
+week.forEach(day=>{
+const dayDiv=document.createElement('div');
+dayDiv.className='graph-day';
+if(day){
+let level=0;
+if(day.solved>0){
+if(maxSolved===0) level=1;
+else{
+const ratio=day.solved/maxSolved;
+if(ratio<0.25) level=1;
+else if(ratio<0.5) level=2;
+else if(ratio<0.75) level=3;
+else level=4;
+}
+}
+dayDiv.className+=` level-${level}`;
+dayDiv.dataset.date=day.key;
+dayDiv.dataset.solved=day.solved;
+dayDiv.addEventListener('mouseenter',showTooltip);
+dayDiv.addEventListener('mouseleave',hideTooltip);
+}else{
+dayDiv.className+=' level-0';
+}
+weekDiv.appendChild(dayDiv);
+});
+weeksContainer.appendChild(weekDiv);
+});
+graphContainer.appendChild(weeksContainer);
+container.appendChild(graphContainer);
+document.getElementById('stat-current-streak').textContent=currentStreak;
+document.getElementById('stat-best-streak').textContent=bestStreak;
+document.getElementById('stat-total-solved').textContent=state.solved;
+}
 function showTooltip(e){
-  const tooltip=document.getElementById('tooltip');
-  const date=e.target.dataset.date;
-  const solved=e.target.dataset.solved;
-  const dateObj=new Date(date);
-  const options={year:'numeric',month:'long',day:'numeric'};
-  const dateStr=dateObj.toLocaleDateString('ru-RU',options);
-  tooltip.innerHTML=`<strong>${solved}</strong> задач решено<br>${dateStr}`;
-  tooltip.classList.add('show');
-  tooltip.style.left=e.pageX+10+'px';
-  tooltip.style.top=e.pageY-10+'px';
+const tooltip=document.getElementById('tooltip');
+const date=e.target.dataset.date;
+const solved=e.target.dataset.solved;
+const dateObj=new Date(date);
+const options={year:'numeric',month:'long',day:'numeric'};
+const dateStr=dateObj.toLocaleDateString('ru-RU',options);
+tooltip.innerHTML=`<strong>${solved}</strong> задач решено<br>${dateStr}`;
+tooltip.classList.add('show');
+tooltip.style.left=e.pageX+10+'px';
+tooltip.style.top=e.pageY-10+'px';
 }
-
 function hideTooltip(){
-  document.getElementById('tooltip').classList.remove('show');
+document.getElementById('tooltip').classList.remove('show');
 }
-
 function loadTask(){
-  if(!state.topic)return;
-  state.task=GEN[state.topic]();
-  document.getElementById('welcome-screen').style.display='none';
-  document.getElementById('task-header').style.display='block';
-  document.getElementById('editor-area').style.display='flex';
-  document.getElementById('console-area').classList.add('show');
-  document.getElementById('actions-bar').style.display='flex';
-  document.getElementById('hint-panel').classList.remove('open');
-
-  document.getElementById('badge-level').textContent='🎯 Уровень '+state.level;
-  const t=TOPICS.find(x=>x.id===state.topic);
-  document.getElementById('badge-topic').textContent=t.icon+' '+t.name;
-  document.getElementById('task-title').innerHTML=state.task.task;
-  document.getElementById('code-editor').value='';
-  clearConsole();
-  logToConsole('📝 Напиши решение и нажми "Проверить"','info');
-  setupHint(state.task.hint||state.task);
-  updateLineInfo();
-  
-  document.getElementById('btn-check').disabled=false;
-  document.getElementById('btn-retry').style.display='none';
-  document.getElementById('btn-next').style.display='none';
+if(state.activeKeyword && KEYWORD_MAP[state.activeKeyword]) {
+  // Load keyword-specific task
+  state.task = KEYWORD_MAP[state.activeKeyword].gen();
+  document.getElementById('badge-topic').textContent = KEYWORD_MAP[state.activeKeyword].icon + ' ' + KEYWORD_MAP[state.activeKeyword].label;
+  document.getElementById('badge-level').textContent = '🔍 Поиск';
+} else if(!state.topic) {
+  return;
+} else {
+  // Load normal topic task
+  state.task = GEN[state.topic]();
+  const t = TOPICS.find(x => x.id === state.topic);
+  document.getElementById('badge-level').textContent = '🎯 Уровень ' + state.level;
+  document.getElementById('badge-topic').textContent = t.icon + ' ' + t.name;
 }
 
+document.getElementById('welcome-screen').style.display='none';
+document.getElementById('task-header').style.display='block';
+document.getElementById('editor-area').style.display='flex';
+document.getElementById('console-area').classList.add('show');
+document.getElementById('actions-bar').style.display='flex';
+document.getElementById('hint-panel').classList.remove('open');
+
+document.getElementById('task-title').innerHTML = state.task.task;
+document.getElementById('code-editor').value = '';
+clearConsole();
+logToConsole('📝 Напиши решение и нажми "Проверить"','info');
+setupHint(state.task.hint || state.task);
+updateLineInfo();
+document.getElementById('btn-check').disabled = false;
+document.getElementById('btn-retry').style.display = 'none';
+document.getElementById('btn-next').style.display = 'none';
+}
 function setupHint(h){
-  document.getElementById('hint-content').innerHTML=`
-    <h4>💡 Как подойти к задаче?</h4>
-    <div class="hint-text">${h.expl}</div>
-    <h4>📋 Пример решения</h4>
-    <div class="hint-example">${escHtml(h.code)}</div>`;
+document.getElementById('hint-content').innerHTML=`
+<h4>💡 Как подойти к задаче?</h4>
+<div class="hint-text">${h.expl}</div>
+<h4>📋 Пример решения</h4>
+<div class="hint-example">${escHtml(h.code)}</div>`;
 }
-
 function toggleHint(){document.getElementById('hint-panel').classList.toggle('open');}
 function closeMenu(){document.getElementById('slide-menu').classList.remove('open');document.getElementById('menu-overlay').classList.remove('open');}
 function openMenu(){document.getElementById('slide-menu').classList.add('open');document.getElementById('menu-overlay').classList.add('open');setupMenu();}
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
 /* ================= RUN ================= */
 let pResolve=null;
 async function mockPrompt(msg){
-  document.getElementById('prompt-label').textContent=msg||'Введи значение:';
-  document.getElementById('prompt-input').value='';
-  document.getElementById('prompt-overlay').classList.add('show');
-  return new Promise(r=>{pResolve=r;document.getElementById('prompt-input').focus();});
+document.getElementById('prompt-label').textContent=msg||'Введи значение:';
+document.getElementById('prompt-input').value='';
+document.getElementById('prompt-overlay').classList.add('show');
+return new Promise(r=>{pResolve=r;document.getElementById('prompt-input').focus();});
 }
 function submitPrompt(){
-  const v=document.getElementById('prompt-input').value;
-  document.getElementById('prompt-overlay').classList.remove('show');
-  if(pResolve)pResolve(v);
+const v=document.getElementById('prompt-input').value;
+document.getElementById('prompt-overlay').classList.remove('show');
+if(pResolve)pResolve(v);
 }
 document.getElementById('prompt-input').onkeydown=e=>e.key==='Enter'&&submitPrompt();
-
 async function runCode(code,inputs=[]){
-  let logs=[],pi=0;
-  const sb={
-    console:{log:(...a)=>logs.push(a.map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' '))},
-    prompt:()=>pi<inputs.length?inputs[pi++]:'',
-    alert:()=>{},Math,JSON,parseInt,parseFloat,isNaN,Number,String,Boolean,Array,Object,Date,setTimeout:()=>{},setInterval:()=>{}
-  };
-  try{const fn=new Function(...Object.keys(sb),code);fn(...Object.values(sb));return{logs,err:null};}
-  catch(e){
-    let msg=e.message;
-    const lineMatch=msg.match(/<anonymous>:(\d+):(\d+)/);
-    if(lineMatch) msg=`Ошибка в строке ${lineMatch[1]}: ${msg.split('\n')[0]}`;
-    return{logs,err:msg};
-  }
+let logs=[],pi=0;
+const sb={
+console:{log:(...a)=>logs.push(a.map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' '))},
+prompt:()=>pi<inputs.length?inputs[pi++]:'',
+alert:()=>{},Math,JSON,parseInt,parseFloat,isNaN,Number,String,Boolean,Array,Object,Date,setTimeout:()=>{},setInterval:()=>{}
+};
+try{const fn=new Function(...Object.keys(sb),code);fn(...Object.values(sb));return{logs,err:null};}
+catch(e){
+let msg=e.message;
+const lineMatch=msg.match(/<anonymous>:(\d+):(\d+)/);
+if(lineMatch) msg=`Ошибка в строке ${lineMatch[1]}: ${msg.split('\n')[0]}`;
+return{logs,err:msg};
 }
-
+}
 async function checkSolution(){
-  const code=document.getElementById('code-editor').value.trim();
-  if(!code)return logToConsole('⚠️ Напиши хотя бы одну строчку!','error');
-
-  clearConsole();logToConsole('⏳ Проверяю...','info');
-  document.getElementById('code-editor').classList.remove('code-error');
-
-  let inputs=[];
-  if(state.task.hasPrompt&&state.task.input!==undefined)inputs=[state.task.input];
-  else inputs=['5'];
-
-  const res=await runCode(code,inputs);
-  if(res.err){
-    logToConsole(`❌ ${res.err}`,'error');
-    logToConsole('💡 Проверь скобки, кавычки, названия переменных.','error');
-    document.getElementById('code-editor').classList.add('code-error');
-    setTimeout(()=>document.getElementById('code-editor').classList.remove('code-error'),500);
-    state.consecutiveWrong++; state.consecutiveCorrect=0;
-    Storage.save();
-    onFailure(); return;
-  }
-
-  const out=res.logs.join('\n').trim();
-  const exp=state.task.expected===null?'':String(state.task.expected).trim();
-
-  if(state.task.expected===null){
-    if(out===''){ logToConsole('✅ Верно! Программа ничего не вывела.','success'); onSuccess(); }
-    else{ logToConsole(`❌ Программа не должна ничего выводить. Твой вывод: "${out}"`,'error'); onFailure(); }
-  }else{
-    if(out===exp){ logToConsole('✅ Отлично! Ответ совпадает.','success'); onSuccess(); }
-    else{ logToConsole('❌ Неверно.','error'); logToConsole(`Твой вывод: "${out}"`,'error'); logToConsole(`Ожидалось: "${exp}"`,'error'); onFailure(); }
-  }
+const code=document.getElementById('code-editor').value.trim();
+if(!code)return logToConsole('⚠️ Напиши хотя бы одну строчку!','error');
+clearConsole();logToConsole('⏳ Проверяю...','info');
+document.getElementById('code-editor').classList.remove('code-error');
+let inputs=[];
+if(state.task.hasPrompt&&state.task.input!==undefined)inputs=[state.task.input];
+else inputs=['5'];
+const res=await runCode(code,inputs);
+if(res.err){
+logToConsole(`❌ ${res.err}`,'error');
+logToConsole('💡 Проверь скобки, кавычки, названия переменных.','error');
+document.getElementById('code-editor').classList.add('code-error');
+setTimeout(()=>document.getElementById('code-editor').classList.remove('code-error'),500);
+state.consecutiveWrong++; state.consecutiveCorrect=0;
+Storage.save();
+onFailure(); return;
 }
-
+const out=res.logs.join('\n').trim();
+const exp=state.task.expected===null?'':String(state.task.expected).trim();
+if(state.task.expected===null){
+if(out===''){ logToConsole('✅ Верно! Программа ничего не вывела.','success'); onSuccess(); }
+else{ logToConsole(`❌ Программа не должна ничего выводить. Твой вывод: "${out}"`,'error'); onFailure(); }
+}else{
+if(out===exp){ logToConsole('✅ Отлично! Ответ совпадает.','success'); onSuccess(); }
+else{ logToConsole('❌ Неверно.','error'); logToConsole(`Твой вывод: "${out}"`,'error'); logToConsole(`Ожидалось: "${exp}"`,'error'); onFailure(); }
+}
+}
 function onSuccess(){
-  state.streak++; state.solved++; state.consecutiveCorrect++; state.consecutiveWrong=0;
-  
-  // Track daily progress
-  const today=formatDate(new Date());
-  if(!state.dailyProgress[today]) state.dailyProgress[today]={solved:0};
-  state.dailyProgress[today].solved++;
-  
-  // Set first activity date if not set
-  if(!state.firstActivityDate){
-    state.firstActivityDate=today;
-  }
-  
-  if(state.consecutiveCorrect===3&&state.level<8) showLevelUpToast();
-  
-  Storage.save(); updateStats(); fireConfetti();
-  document.getElementById('btn-check').disabled=true;
-  document.getElementById('btn-retry').style.display='none';
-  document.getElementById('btn-next').style.display='flex';
+state.streak++; state.solved++; state.consecutiveCorrect++; state.consecutiveWrong=0;
+const today=formatDate(new Date());
+if(!state.dailyProgress[today]) state.dailyProgress[today]={solved:0};
+state.dailyProgress[today].solved++;
+if(!state.firstActivityDate){
+state.firstActivityDate=today;
 }
-
+if(state.consecutiveCorrect===3&&state.level<8) showLevelUpToast();
+Storage.save(); updateStats(); fireConfetti();
+document.getElementById('btn-check').disabled=true;
+document.getElementById('btn-retry').style.display='none';
+document.getElementById('btn-next').style.display='flex';
+}
 function onFailure(){
-  state.streak=0; Storage.save(); updateStats();
-  document.getElementById('btn-check').disabled=false;
-  document.getElementById('btn-retry').style.display='flex';
-  document.getElementById('btn-next').style.display='flex';
+state.streak=0; Storage.save(); updateStats();
+document.getElementById('btn-check').disabled=false;
+document.getElementById('btn-retry').style.display='flex';
+document.getElementById('btn-next').style.display='flex';
 }
-
 function showLevelUpToast(){
-  const t=document.getElementById('levelup-toast');
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),4000);
+const t=document.getElementById('levelup-toast');
+t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),4000);
 }
-
 function nextTask(){loadTask();}
 function retryTask(){
-  document.getElementById('code-editor').value=''; clearConsole();
-  logToConsole('🔄 Попробуй ещё раз!','info');
-  document.getElementById('btn-retry').style.display='none';
-  document.getElementById('btn-check').disabled=false;
-  document.getElementById('code-editor').focus();
+document.getElementById('code-editor').value=''; clearConsole();
+logToConsole('🔄 Попробуй ещё раз!','info');
+document.getElementById('btn-retry').style.display='none';
+document.getElementById('btn-check').disabled=false;
+document.getElementById('code-editor').focus();
 }
-
 function updateStats(){
-  document.getElementById('streak').textContent=state.streak;
-  document.getElementById('solved').textContent=state.solved;
+document.getElementById('streak').textContent=state.streak;
+document.getElementById('solved').textContent=state.solved;
 }
-
 function updateLineInfo(){
-  const editor=document.getElementById('code-editor');
-  const lineInfo=document.getElementById('line-info');
-  editor.addEventListener('input',()=>{
-    const lines=editor.value.split('\n');
-    const cursorPos=editor.selectionStart;
-    const lineNum=editor.value.substr(0,cursorPos).split('\n').length;
-    lineInfo.textContent=`Строк: ${lines.length} | Позиция: ${lineNum}`;
-  });
+const editor=document.getElementById('code-editor');
+const lineInfo=document.getElementById('line-info');
+editor.addEventListener('input',()=>{
+const lines=editor.value.split('\n');
+const cursorPos=editor.selectionStart;
+const lineNum=editor.value.substr(0,cursorPos).split('\n').length;
+lineInfo.textContent=`Строк: ${lines.length} | Позиция: ${lineNum}`;
+});
 }
-
 function logToConsole(msg,t='log'){
-  const d=document.createElement('div');
-  d.className=`console-line ${t}`; d.textContent=msg;
-  document.getElementById('console-output').appendChild(d);
-  d.scrollIntoView({behavior:'smooth'});
+const d=document.createElement('div');
+d.className=`console-line ${t}`; d.textContent=msg;
+document.getElementById('console-output').appendChild(d);
+d.scrollIntoView({behavior:'smooth'});
 }
-
 function clearConsole(){document.getElementById('console-output').innerHTML='';}
 function startRandom(){
-  state.topic=TOPICS[ri(0,TOPICS.length-1)].id;
-  state.level=ri(1,8);
-  loadTask();
+state.activeKeyword = null;
+state.topic=TOPICS[ri(0,TOPICS.length-1)].id;
+state.level=ri(1,8);
+loadTask();
 }
-
 /* ================= THEME ================= */
 function initTheme(){
-  const toggle=document.getElementById('theme-toggle');
-  if(state.theme==='light'){ document.documentElement.classList.add('light'); toggle.textContent='☀️'; }
-  toggle.onclick=()=>{
-    document.documentElement.classList.toggle('light');
-    state.theme=document.documentElement.classList.contains('light')?'light':'dark';
-    toggle.textContent=state.theme==='light'?'☀️':'🌙';
-    Storage.save();
-  };
+const toggle=document.getElementById('theme-toggle');
+if(state.theme==='light'){ document.documentElement.classList.add('light'); toggle.textContent='☀️'; }
+toggle.onclick=()=>{
+document.documentElement.classList.toggle('light');
+state.theme=document.documentElement.classList.contains('light')?'light':'dark';
+toggle.textContent=state.theme==='light'?'☀️':'🌙';
+Storage.save();
+};
 }
-
 /* ================= CONFETTI ================= */
 function fireConfetti(){
-  const canvas=document.getElementById('confetti-canvas');
-  const ctx=canvas.getContext('2d');
-  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
-  const particles=[], colors=['#6c63ff','#00d2ff','#2ecc71','#f39c12','#e74c3c'];
-  for(let i=0;i<100;i++) particles.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-.5)*15,vy:(Math.random()-.5)*15-5,size:Math.random()*8+4,color:colors[Math.floor(Math.random()*colors.length)],life:100});
-  function animate(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    let active=false;
-    particles.forEach(p=>{if(p.life>0){active=true;p.x+=p.vx;p.y+=p.vy;p.vy+=.3;p.life--;ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size);}});
-    if(active)requestAnimationFrame(animate); else ctx.clearRect(0,0,canvas.width,canvas.height);
-  }
-  animate();
+const canvas=document.getElementById('confetti-canvas');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+const particles=[], colors=['#6c63ff','#00d2ff','#2ecc71','#f39c12','#e74c3c'];
+for(let i=0;i<100;i++) particles.push({x:canvas.width/2,y:canvas.height/2,vx:(Math.random()-.5)*15,vy:(Math.random()-.5)*15-5,size:Math.random()*8+4,color:colors[Math.floor(Math.random()*colors.length)],life:100});
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+let active=false;
+particles.forEach(p=>{if(p.life>0){active=true;p.x+=p.vx;p.y+=p.vy;p.vy+=.3;p.life--;ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,p.size,p.size);}});
+if(active)requestAnimationFrame(animate); else ctx.clearRect(0,0,canvas.width,canvas.height);
 }
-
+animate();
+}
 /* ================= INIT ================= */
 document.getElementById('burger-btn').onclick=openMenu;
 document.getElementById('close-menu').onclick=closeMenu;
 document.getElementById('menu-overlay').onclick=closeMenu;
 document.getElementById('code-editor').addEventListener('keydown',e=>{
-  if(e.key==='Tab'){e.preventDefault();const t=e.target,s=t.selectionStart;t.value=t.value.substring(0,s)+'    '+t.value.substring(t.selectionEnd);t.selectionStart=t.selectionEnd=s+4;}
+if(e.key==='Tab'){e.preventDefault();const t=e.target,s=t.selectionStart;t.value=t.value.substring(0,s)+'    '+t.value.substring(t.selectionEnd);t.selectionStart=t.selectionEnd=s+4;}
 });
 document.addEventListener('keydown',e=>e.ctrlKey&&e.key==='Enter'&&checkSolution());
-
 Storage.load(); initTheme(); setupMenu(); updateStats();
 </script>
 </body>
